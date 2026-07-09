@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Book | City Connect{% endblock %}
+{% block content %}
+<section class="card page-hero">
+  <p class="eyebrow">Booking request</p>
+  <h1>Reserve a trip in a clean, direct flow with no account needed.</h1>
+  <p class="lead">Enter the journey details and get a reference after submission.</p>
+</section>
+
+<section class="content-grid">
+  <article class="card form-card large-form">
+    <form method="post" class="stack-form">
+      <div class="two-col">
+        <label>Customer name<input name="customer_name" required></label>
+        <label>Phone<input name="phone" placeholder="07xx xxx xxx"></label>
+      </div>
+      <div class="two-col">
+        <label>Pickup point<input name="pickup" required></label>
+        <label>Drop-off point<input name="dropoff" required></label>
+      </div>
+      <div class="three-col">
+        <label>Travel date<input type="date" name="travel_date" required></label>
+        <label>Travel time<input type="time" name="travel_time"></label>
+        <label>Passengers<input type="number" min="1" name="passengers" value="1"></label>
+      </div>
+      <label>Notes<textarea name="notes" rows="5" placeholder="Special instructions, luggage, child seat, and so on."></textarea></label>
+      <button class="btn primary" type="submit">Submit booking</button>
+    </form>
+  </article>
+  <aside class="card prose-card highlight-panel">
+    <p class="eyebrow">What happens next</p>
+    <h2>Your request is stored with a reference number.</h2>
+    <p class="body-copy">The booking can then be handled inside the protected admin area and assigned to a driver when ready.</p>
+  </aside>
+</section>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Admin Login | City Connect{% endblock %}
+{% block content %}
+<section class="card form-card auth-panel">
+  <p class="eyebrow">Protected access</p>
+  <h1>Admin login</h1>
+  <form method="post" class="stack-form">
+    <label>Email<input type="email" name="email" required></label>
+    <label>Password<input type="password" name="password" required></label>
+    <button class="btn primary" type="submit">Enter board</button>
+  </form>
+</section>
+{% endblock %}

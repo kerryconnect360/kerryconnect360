@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Admin Board | City Connect{% endblock %}
+{% block content %}
+<section class="card page-hero hero-grid admin-hero">
+  <div>
+    <p class="eyebrow">Admin board</p>
+    <h1>Manage users, bookings, and announcements.</h1>
+    <p class="lead">Everything behind this screen is protected and separate from the public site.</p>
+  </div>
+  <div class="hero-side compact-panel">
+    <strong>{{ users|length }}</strong>
+    <span>Total accounts</span>
+    <div class="button-row compact">
+      <a class="btn secondary" href="{{ url_for('board_users') }}">Users</a>
+      <a class="btn ghost" href="{{ url_for('board_bookings') }}">Bookings</a>
+    </div>
+  </div>
+</section>
+
+<section class="feature-grid branded-grid">
+  <article class="card feature-card"><h3>Users</h3><p>{{ users|length }} accounts</p></article>
+  <article class="card feature-card"><h3>Drivers</h3><p>{{ users | selectattr('role', 'equalto', 'driver') | list | length }} assigned staff</p></article>
+  <article class="card feature-card"><h3>Bookings</h3><p>{{ recent_bookings|length }} recent items</p></article>
+  <article class="card feature-card"><h3>Announcements</h3><p>{{ active_announcements|length }} notices</p></article>
+</section>
+
+<section class="content-grid">
+  <article class="card">
+    <h2>Quick links</h2>
+    <div class="button-row wrap">
+      <a class="btn primary" href="{{ url_for('board_users') }}">Manage users and drivers</a>
+      <a class="btn secondary" href="{{ url_for('board_bookings') }}">Manage bookings</a>
+      <a class="btn secondary" href="{{ url_for('board_announcements') }}">Publish notices</a>
+    </div>
+  </article>
+  <article class="card">
+    <h2>Latest activity</h2>
+    {% if recent_bookings %}
+      <div class="mini-list">
+        {% for booking in recent_bookings %}
+        <div class="mini-item">
+          <strong>{{ booking.reference }}</strong>
+          <p>{{ booking.customer_name }} • {{ booking.status }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted">No booking activity yet.</p>
+    {% endif %}
+  </article>
+</section>
+{% endblock %}

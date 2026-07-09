@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Driver Dashboard | City Connect{% endblock %}
+{% block content %}
+<section class="card page-hero hero-grid admin-hero">
+  <div>
+    <p class="eyebrow">Driver area</p>
+    <h1>Welcome, {{ current_user.full_name }}.</h1>
+    <p class="lead">View assigned bookings and update trip progress from one protected page.</p>
+  </div>
+  <div class="hero-side compact-panel">
+    <strong>{{ assigned|length }}</strong>
+    <span>Assigned trips</span>
+    <div class="button-row compact">
+      <a class="btn secondary" href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </div>
+</section>
+
+<section class="content-grid">
+  <article class="card">
+    <h2>Your assigned bookings</h2>
+    {% if assigned %}
+      <div class="stack-list">
+        {% for booking in assigned %}
+          <div class="notice-item">
+            <div>
+              <strong>{{ booking.reference }}</strong>
+              <p>{{ booking.pickup }} → {{ booking.dropoff }}</p>
+              <small>{{ booking.travel_date }} {% if booking.travel_time %}{{ booking.travel_time }}{% endif %} • {{ booking.status }}</small>
+            </div>
+            <form method="post" action="{{ url_for('driver_update_booking', booking_id=booking.id) }}" class="inline-form">
+              <select name="status">
+                {% for value in ['Assigned', 'On the way', 'Picked up', 'Completed'] %}
+                  <option value="{{ value }}" {% if booking.status == value %}selected{% endif %}>{{ value }}</option>
+                {% endfor %}
+              </select>
+              <button class="btn secondary" type="submit">Update</button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted">No trips assigned yet.</p>
+    {% endif %}
+  </article>
+  <article class="card">
+    <h2>Unassigned recent bookings</h2>
+    {% if pending %}
+      <div class="mini-list">
+        {% for booking in pending %}
+          <div class="mini-item">
+            <strong>{{ booking.reference }}</strong>
+            <p>{{ booking.customer_name }} • {{ booking.pickup }} → {{ booking.dropoff }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted">Nothing pending right now.</p>
+    {% endif %}
+  </article>
+</section>
+{% endblock %}

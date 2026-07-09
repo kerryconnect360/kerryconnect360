@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Contact | City Connect{% endblock %}
+{% block content %}
+<section class="card page-hero">
+  <p class="eyebrow">Contact</p>
+  <h1>Send a message to the team.</h1>
+  <p class="lead">For booking help, service questions, or support.</p>
+</section>
+
+<section class="content-grid">
+  <article class="card form-card">
+    <form method="post" class="stack-form">
+      <label>Your name<input name="name" required></label>
+      <label>Your email<input type="email" name="email" required></label>
+      <label>Subject<input name="subject" required></label>
+      <label>Message<textarea name="message" rows="6" required></textarea></label>
+      <button class="btn primary" type="submit">Send message</button>
+    </form>
+  </article>
+  <article class="card prose-card">
+    <h2>Best used for</h2>
+    <div class="mini-list">
+      <div class="mini-item"><strong>Booking help</strong><p>Ask about a trip request.</p></div>
+      <div class="mini-item"><strong>General support</strong><p>Send a short note and get a response.</p></div>
+      <div class="mini-item"><strong>Service updates</strong><p>Check the home page for active notices.</p></div>
+    </div>
+  </article>
+</section>
+{% endblock %}

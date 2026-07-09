@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Bookings | City Connect{% endblock %}
+{% block content %}
+<section class="card page-hero">
+  <p class="eyebrow">Board / bookings</p>
+  <h1>Track booking status and assign drivers.</h1>
+  <p class="lead">Use this screen to move requests from new to completed.</p>
+</section>
+
+<section class="card">
+  <div class="button-row compact wrap">
+    {% for value in ['all', 'Pending', 'Assigned', 'On the way', 'Picked up', 'Completed'] %}
+      <a class="btn {% if selected_status == value or (value == 'all' and selected_status == 'all') %}primary{% else %}secondary{% endif %}" href="{{ url_for('board_bookings', status=value) }}">{{ value }}</a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="stack-list">
+  {% for booking in bookings %}
+    <article class="card notice-item">
+      <div>
+        <strong>{{ booking.reference }}</strong>
+        <p>{{ booking.customer_name }} • {{ booking.phone or 'No phone' }}</p>
+        <small>{{ booking.pickup }} → {{ booking.dropoff }} • {{ booking.travel_date }} {% if booking.travel_time %}{{ booking.travel_time }}{% endif %}</small>
+      </div>
+      <form method="post" class="inline-form">
+        <input type="hidden" name="booking_id" value="{{ booking.id }}">
+        <select name="status">
+          {% for value in ['Pending', 'Assigned', 'On the way', 'Picked up', 'Completed', 'Cancelled'] %}
+            <option value="{{ value }}" {% if booking.status == value %}selected{% endif %}>{{ value }}</option>
+          {% endfor %}
+        </select>
+        <select name="assigned_driver_id">
+          <option value="">Assign driver</option>
+          {% for driver in drivers %}
+            <option value="{{ driver.id }}" {% if booking.assigned_driver_id == driver.id %}selected{% endif %}>{{ driver.full_name }}</option>
+          {% endfor %}
+        </select>
+        <button class="btn secondary" type="submit">Update</button>
+      </form>
+    </article>
+  {% else %}
+    <p class="muted">No bookings found.</p>
+  {% endfor %}
+</section>
+{% endblock %}

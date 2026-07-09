@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#08111f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="{{ url_for('manifest') }}">
+  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <title>{% block title %}City Connect{% endblock %}</title>
+</head>
+<body>
+  <div class="backdrop"></div>
+  <div class="page-shell">
+    <header class="masthead">
+      <a class="brand" href="{{ url_for('index') }}" aria-label="City Connect home">
+        <img src="{{ url_for('static', filename='logo.svg') }}" alt="" class="brand-logo">
+        <span class="brand-copy">
+          <strong>City Connect</strong>
+          <small>Bookings made simple.</small>
+        </span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('book') }}">Book</a>
+        <a href="{{ url_for('about') }}">About</a>
+        <a href="{{ url_for('contact') }}">Contact</a>
+      </nav>
+    </header>
+
+    {% if latest_announcement %}
+      <section class="notice-banner card">
+        <span class="badge">Update</span>
+        <div>
+          <strong>{{ latest_announcement.title }}</strong>
+          <p>{{ latest_announcement.body }}</p>
+        </div>
+      </section>
+    {% endif %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <section class="alerts">
+          {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </section>
+      {% endif %}
+    {% endwith %}
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+      <div>
+        <strong>City Connect</strong>
+        <p>Booking, support, and trip handling with a clean public face.</p>
+      </div>
+      <div class="footer-links">
+        <a href="{{ url_for('book') }}">Book</a>
+        <a href="{{ url_for('about') }}">About us</a>
+        <a href="{{ url_for('contact') }}">Support</a>
+      </div>
+    </footer>
+  </div>
+
+  <button id="installBtn" class="install-btn hidden" aria-label="Install app">Install app</button>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register("{{ url_for('service_worker') }}"));
+    }
+  </script>
+</body>
+</html>

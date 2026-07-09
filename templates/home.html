@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}City Connect | Home{% endblock %}
+{% block content %}
+<section class="hero card hero-split">
+  <div class="hero-intro hero-center">
+    <div class="home-mark">
+      <img src="{{ url_for('static', filename='logo.svg') }}" alt="City Connect logo">
+    </div>
+    <p class="eyebrow">City Connect</p>
+    <h1>Book a trip fast.</h1>
+    <p class="lead">Open the site, make a booking, and move on.</p>
+    <div class="button-row">
+      <a class="btn primary" href="{{ url_for('book') }}">Book now</a>
+      <a class="btn secondary" href="{{ url_for('contact') }}">Contact support</a>
+    </div>
+  </div>
+</section>
+
+<section class="home-panels">
+  <article class="card feature-card featured home-panel booking-panel">
+    <p class="eyebrow">Booking</p>
+    <h2>Start with the trip details.</h2>
+    <p>Pickup, drop-off, date, and a quick note are enough to send the request.</p>
+    <div class="panel-actions">
+      <a class="btn primary" href="{{ url_for('book') }}">Open booking form</a>
+    </div>
+  </article>
+
+  <article class="card feature-card home-panel notice-panel">
+    <p class="eyebrow">Updates</p>
+    <h2>Simple communication.</h2>
+    <p>Notices appear when they matter.</p>
+    {% if latest_announcement %}
+      <div class="mini-item stacked">
+        <div>
+          <strong>{{ latest_announcement.title }}</strong>
+          <p>{{ latest_announcement.body }}</p>
+        </div>
+      </div>
+    {% else %}
+      <div class="mini-item stacked">
+        <div>
+          <strong>No active notice right now</strong>
+          <p>Bookings are still open.</p>
+        </div>
+      </div>
+    {% endif %}
+  </article>
+</section>
+
+{% endblock %}

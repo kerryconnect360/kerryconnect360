@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Announcements | City Connect{% endblock %}
+{% block content %}
+<section class="card page-hero">
+  <p class="eyebrow">Board / announcements</p>
+  <h1>Publish notices that appear on the public site.</h1>
+  <p class="lead">Use short, clear updates for customers and staff.</p>
+</section>
+
+<section class="content-grid">
+  <article class="card form-card">
+    <h2>New announcement</h2>
+    <form method="post" class="stack-form">
+      <label>Title<input name="title" required></label>
+      <label>Audience<input name="audience" placeholder="All users, drivers, or specific group"></label>
+      <label>Message<textarea name="body" rows="6" required></textarea></label>
+      <button class="btn primary" type="submit">Publish</button>
+    </form>
+  </article>
+  <article class="card">
+    <h2>Published notices</h2>
+    <div class="stack-list">
+      {% for item in announcements %}
+        <div class="notice-item">
+          <div>
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.body }}</p>
+            <small>{{ item.audience }} • {{ 'Active' if item.active else 'Hidden' }}</small>
+          </div>
+          <form method="post" action="{{ url_for('board_toggle_announcement', announcement_id=item.id) }}">
+            <button class="btn secondary" type="submit">{{ 'Hide' if item.active else 'Show' }}</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  </article>
+</section>
+{% endblock %}

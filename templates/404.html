@@ -1,1 +1,13 @@
-
+{% extends 'base.html' %}
+{% block title %}Not found | City Connect{% endblock %}
+{% block content %}
+<section class="card page-hero">
+  <p class="eyebrow">404</p>
+  <h1>That page could not be found.</h1>
+  <p class="lead">Return to the homepage or continue to booking.</p>
+  <div class="button-row">
+    <a class="btn primary" href="{{ url_for('index') }}">Go home</a>
+    <a class="btn secondary" href="{{ url_for('book') }}">Book now</a>
+  </div>
+</section>
+{% endblock %}

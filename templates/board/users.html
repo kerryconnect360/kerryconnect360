@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Users | City Connect{% endblock %}
+{% block content %}
+<section class="card page-hero">
+  <p class="eyebrow">Board / users</p>
+  <h1>Add users and drivers, then assign the right roles.</h1>
+  <p class="lead">Drivers are added by admin and only log in later. The public site never asks strangers to register.</p>
+</section>
+
+<section class="content-grid">
+  <article class="card form-card">
+    <h2>Add account</h2>
+    <form method="post" class="stack-form">
+      <label>Full name<input name="full_name" required></label>
+      <label>Email<input type="email" name="email" required></label>
+      <label>Password<input type="password" name="password" required></label>
+      <label>Role
+        <select name="role">
+          <option value="user">User</option>
+          <option value="driver">Driver</option>
+          <option value="admin">Admin</option>
+        </select>
+      </label>
+      <button class="btn primary" type="submit">Add account</button>
+    </form>
+  </article>
+  <article class="card">
+    <h2>Accounts</h2>
+    <div class="stack-list">
+      {% for user in users %}
+        <div class="notice-item">
+          <div>
+            <strong>{{ user.full_name }}</strong>
+            <p>{{ user.email }}</p>
+            <small>{{ user.role }}</small>
+          </div>
+          <form method="post" action="{{ url_for('board_change_role', user_id=user.id) }}" class="inline-form">
+            <select name="role">
+              <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
+              <option value="driver" {% if user.role == 'driver' %}selected{% endif %}>Driver</option>
+              <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+            </select>
+            <button class="btn secondary" type="submit">Save</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  </article>
+</section>
+{% endblock %}

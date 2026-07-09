@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Driver Login | City Connect{% endblock %}
+{% block content %}
+<section class="card form-card auth-panel">
+  <p class="eyebrow">Driver access</p>
+  <h1>Driver login</h1>
+  <p class="body-copy">Only already-added drivers can sign in here.</p>
+  <form method="post" class="stack-form">
+    <label>Email<input type="email" name="email" required></label>
+    <label>Password<input type="password" name="password" required></label>
+    <button class="btn primary" type="submit">Enter driver area</button>
+  </form>
+</section>
+{% endblock %}
