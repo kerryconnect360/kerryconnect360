@@ -1,51 +1,80 @@
 {% extends 'base.html' %}
-{% block title %}City Connect | Home{% endblock %}
+{% block title %}{{ brand.site_name if brand else 'Book with Kerry' }}{% endblock %}
 {% block content %}
-<section class="hero card hero-split">
-  <div class="hero-intro hero-center">
-    <div class="home-mark">
-      <img src="{{ url_for('static', filename='logo.svg') }}" alt="City Connect logo">
+<section class="hero card">
+  <div class="hero-brand">
+    <img class="hero-logo" src="{{ brand.logo_url if brand else url_for('static', filename='logo.svg') }}" alt="{{ brand.site_name if brand else 'Book with Kerry' }}">
+    <p class="eyebrow">Public booking desk</p>
+    <h1>{{ brand.site_name if brand else 'Book with Kerry' }}</h1>
+    <p class="lead">{{ brand.support_blurb if brand else 'A practical booking site for trips, seats, and approved receipts.' }}</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="{{ url_for('book') }}">Book a seat</a>
+      <a class="btn secondary" href="{{ url_for('track') }}">Track booking</a>
     </div>
-    <p class="eyebrow">City Connect</p>
-    <h1>Book a trip fast.</h1>
-    <p class="lead">Open the site, make a booking, and move on.</p>
-    <div class="button-row">
-      <a class="btn primary" href="{{ url_for('book') }}">Book now</a>
-      <a class="btn secondary" href="{{ url_for('contact') }}">Contact support</a>
+  </div>
+  <div class="hero-summary">
+    <div class="summary-card">
+      <span>Payments</span>
+      <strong>M-Pesa {{ brand.mpesa_number if brand else '0712648079' }}</strong>
+      <small>Approved manually by admin</small>
+    </div>
+    <div class="summary-card">
+      <span>Public support</span>
+      <strong>{{ brand.contact_phone if brand else '0712648079' }}</strong>
+      <small>{{ brand.address if brand else 'Open 24/7 for bookings' }}</small>
     </div>
   </div>
 </section>
 
-<section class="home-panels">
-  <article class="card feature-card featured home-panel booking-panel">
-    <p class="eyebrow">Booking</p>
-    <h2>Start with the trip details.</h2>
-    <p>Pickup, drop-off, date, and a quick note are enough to send the request.</p>
-    <div class="panel-actions">
-      <a class="btn primary" href="{{ url_for('book') }}">Open booking form</a>
-    </div>
-  </article>
-
-  <article class="card feature-card home-panel notice-panel">
-    <p class="eyebrow">Updates</p>
-    <h2>Simple communication.</h2>
-    <p>Notices appear when they matter.</p>
-    {% if latest_announcement %}
-      <div class="mini-item stacked">
-        <div>
-          <strong>{{ latest_announcement.title }}</strong>
-          <p>{{ latest_announcement.body }}</p>
-        </div>
+<section class="section-grid">
+  <article class="card feature-card">
+    <p class="eyebrow">Trips</p>
+    <h2>Current vehicles with seats ready.</h2>
+    <p>Pick a route, choose seats, and submit a booking without creating an account.</p>
+    {% if trips %}
+      <div class="trip-list">
+        {% for trip in trips %}
+          <a class="trip-item" href="{{ url_for('book', trip_id=trip.id) }}">
+            <strong>{{ trip.route_name }}</strong>
+            <small>{{ trip.vehicle_name }} • {{ trip.total_seats }} seats • {{ trip.departure_date }}</small>
+          </a>
+        {% endfor %}
       </div>
     {% else %}
-      <div class="mini-item stacked">
-        <div>
-          <strong>No active notice right now</strong>
-          <p>Bookings are still open.</p>
-        </div>
+      <p class="muted">No active trips yet.</p>
+    {% endif %}
+  </article>
+
+  <article class="card feature-card">
+    <p class="eyebrow">Business card</p>
+    <h2>Download the company card.</h2>
+    <p>One file available to many users, directly from the site.</p>
+    {% if card_url %}
+      <div class="card-preview">
+        {% if brand.card_filename and brand.card_filename.lower().endswith(('.png','.jpg','.jpeg','.webp','.gif','.svg')) %}
+          <img src="{{ card_url }}" alt="Business card">
+        {% else %}
+          <div class="file-chip">Business card uploaded</div>
+        {% endif %}
       </div>
+      <a class="btn secondary" href="{{ url_for('card_download') }}">Download card</a>
+    {% else %}
+      <p class="muted">No business card uploaded yet.</p>
     {% endif %}
   </article>
 </section>
 
+<section class="section-grid slim">
+  <article class="card feature-card">
+    <p class="eyebrow">Receipt flow</p>
+    <h2>Book, pay, approve, receipt.</h2>
+    <p>After payment is confirmed by admin, a receipt opens with a share link for WhatsApp.</p>
+  </article>
+  <article class="card feature-card">
+    <p class="eyebrow">Scan</p>
+    <h2>QR opens this site.</h2>
+    <p>The QR code points directly to the live homepage.</p>
+    <a class="btn secondary" href="{{ url_for('qr') }}">Open QR code</a>
+  </article>
+</section>
 {% endblock %}

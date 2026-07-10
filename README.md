@@ -1,28 +1,28 @@
-# City Connect
+# Book with Kerry
 
-A mobile-first booking and admin platform built with Flask, HTML, CSS, and JavaScript.
+A public booking site with:
+- user-facing bookings without login
+- admin dashboard at `/board`
+- driver login at `/drivers`
+- seat-based booking by trip/vehicle
+- manual payment approval
+- shareable receipt links
+- uploadable logo and business card
+- QR code that opens the live site
 
-## Structure
-- Public homepage opens at `/`
-- Customer booking page at `/book`
-- Customer app at `/app`
-- Protected admin board at `/board`
-- Admin login at `/board/login`
-- First-time setup at `/setup`
+## Default admin
+If no admin exists, the app seeds one from environment variables or defaults:
 
-## Features
-- First user becomes admin automatically
-- Admin can add other users and change roles
-- Public site, customer portal, and protected admin board are separated
-- PWA install button and service worker
-- SQLite persistence in `instance/` by default
-- Optional `DATABASE_URL` for hosted deployments
+- username: `admin`
+- password: `Admin123!`
 
-## Run locally
-```bash
-pip install -r requirements.txt
-python app.py
-```
+Set your own values in production:
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD`
+- `ADMIN_NAME`
 
-## Deploy
-Use the `Procfile` with Gunicorn.
+## Notes
+- Public users do not register or log in.
+- Admin can upload branding from the settings page.
+- Drivers are created by admin and only sign in.
+- Bookings are stored in SQLite by default, so the app survives rebuilds when the database file is preserved.

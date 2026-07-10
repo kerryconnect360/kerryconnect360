@@ -1,28 +1,31 @@
 {% extends 'base.html' %}
-{% block title %}Services | City Connect{% endblock %}
+{% block title %}Trips | {{ brand.site_name if brand else 'Book with Kerry' }}{% endblock %}
 {% block content %}
-<section class="card page-hero">
-  <p class="eyebrow">Services</p>
-  <h1>The public sees only what helps them use the service.</h1>
-  <p class="lead">No clutter, no over-explaining, just the practical parts that matter.</p>
+<section class="card page-head">
+  <p class="eyebrow">Trips</p>
+  <h1>Available vehicles and seat counts.</h1>
+  <p class="lead">Pick a trip and move straight into seat booking.</p>
 </section>
-
-<section class="service-grid">
-  <article class="card service-card accent">
-    <h3>Booking</h3>
-    <p>Send trip details directly through the form.</p>
-  </article>
-  <article class="card service-card">
-    <h3>Support</h3>
-    <p>Ask a question or request help from the contact page.</p>
-  </article>
-  <article class="card service-card">
-    <h3>Updates</h3>
-    <p>Important notices appear without overwhelming the page.</p>
-  </article>
-  <article class="card service-card">
-    <h3>Trip handling</h3>
-    <p>The request is stored and handled behind the scenes.</p>
-  </article>
+<section class="trip-grid">
+  {% for trip in trips %}
+    <article class="card trip-card">
+      <div class="trip-card-top">
+        <div>
+          <p class="eyebrow">{{ trip.vehicle_type }}</p>
+          <h2>{{ trip.route_name }}</h2>
+        </div>
+        <strong class="fare">KSh {{ trip.fare_per_seat }}</strong>
+      </div>
+      <p>{{ trip.vehicle_name }}</p>
+      <p>{{ trip.origin or 'Origin' }} → {{ trip.destination or 'Destination' }}</p>
+      <p>{{ trip.departure_date }}{% if trip.departure_time %} • {{ trip.departure_time }}{% endif %}</p>
+      <p>{{ trip.total_seats }} seats</p>
+      <a class="btn primary" href="{{ url_for('book', trip_id=trip.id) }}">Book seats</a>
+    </article>
+  {% else %}
+    <article class="card">
+      <p class="muted">No trips have been published yet.</p>
+    </article>
+  {% endfor %}
 </section>
 {% endblock %}

@@ -1,13 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Not found | City Connect{% endblock %}
+{% block title %}Not found | {{ brand.site_name if brand else 'Book with Kerry' }}{% endblock %}
 {% block content %}
-<section class="card page-hero">
+<section class="card page-head">
   <p class="eyebrow">404</p>
-  <h1>That page could not be found.</h1>
-  <p class="lead">Return to the homepage or continue to booking.</p>
-  <div class="button-row">
-    <a class="btn primary" href="{{ url_for('index') }}">Go home</a>
-    <a class="btn secondary" href="{{ url_for('book') }}">Book now</a>
-  </div>
+  <h1>That page is not here.</h1>
+  <p class="lead">Use the homepage to continue.</p>
+  <a class="btn primary" href="{{ url_for('index') }}">Go home</a>
 </section>
 {% endblock %}

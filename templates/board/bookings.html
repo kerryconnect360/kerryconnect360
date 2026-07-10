@@ -1,46 +1,44 @@
 {% extends 'base.html' %}
-{% block title %}Bookings | City Connect{% endblock %}
+{% block title %}Bookings | {{ brand.site_name if brand else 'Book with Kerry' }}{% endblock %}
 {% block content %}
-<section class="card page-hero">
-  <p class="eyebrow">Board / bookings</p>
-  <h1>Track booking status and assign drivers.</h1>
-  <p class="lead">Use this screen to move requests from new to completed.</p>
+<section class="card page-head">
+  <p class="eyebrow">Bookings</p>
+  <h1>Approve payment and unlock receipts.</h1>
+  <p class="lead">Manual approval keeps the payment step under admin control.</p>
 </section>
 
-<section class="card">
-  <div class="button-row compact wrap">
-    {% for value in ['all', 'Pending', 'Assigned', 'On the way', 'Picked up', 'Completed'] %}
-      <a class="btn {% if selected_status == value or (value == 'all' and selected_status == 'all') %}primary{% else %}secondary{% endif %}" href="{{ url_for('board_bookings', status=value) }}">{{ value }}</a>
-    {% endfor %}
-  </div>
-</section>
-
-<section class="stack-list">
+<section class="list-stack">
   {% for booking in bookings %}
-    <article class="card notice-item">
-      <div>
+    <article class="card booking-row">
+      <div class="booking-main">
         <strong>{{ booking.reference }}</strong>
-        <p>{{ booking.customer_name }} • {{ booking.phone or 'No phone' }}</p>
-        <small>{{ booking.pickup }} → {{ booking.dropoff }} • {{ booking.travel_date }} {% if booking.travel_time %}{{ booking.travel_time }}{% endif %}</small>
+        <p>{{ booking.customer_name }} • {{ booking.phone }}</p>
+        <small>{{ booking.trip.route_name }} • Seats {{ booking.seats | join(', ') }} • KSh {{ booking.amount }}</small>
+        <small>Status: {{ booking.payment_status }}</small>
+        {% if booking.receipt_number %}<small>Receipt: {{ booking.receipt_number }}</small>{% endif %}
       </div>
-      <form method="post" class="inline-form">
-        <input type="hidden" name="booking_id" value="{{ booking.id }}">
-        <select name="status">
-          {% for value in ['Pending', 'Assigned', 'On the way', 'Picked up', 'Completed', 'Cancelled'] %}
-            <option value="{{ value }}" {% if booking.status == value %}selected{% endif %}>{{ value }}</option>
-          {% endfor %}
-        </select>
-        <select name="assigned_driver_id">
-          <option value="">Assign driver</option>
-          {% for driver in drivers %}
-            <option value="{{ driver.id }}" {% if booking.assigned_driver_id == driver.id %}selected{% endif %}>{{ driver.full_name }}</option>
-          {% endfor %}
-        </select>
-        <button class="btn secondary" type="submit">Update</button>
-      </form>
+      <div class="booking-actions">
+        <form method="post" action="{{ url_for('board_booking_assign', booking_id=booking.id) }}">
+          <select name="trip_id">
+            {% for trip in trips %}
+              <option value="{{ trip.id }}" {% if booking.trip_id == trip.id %}selected{% endif %}>{{ trip.route_name }}</option>
+            {% endfor %}
+          </select>
+          <button class="btn secondary" type="submit">Assign</button>
+        </form>
+        <form method="post" action="{{ url_for('board_booking_approve', booking_id=booking.id) }}">
+          <button class="btn primary" type="submit">Approve payment</button>
+        </form>
+        <form method="post" action="{{ url_for('board_booking_reject', booking_id=booking.id) }}">
+          <button class="btn danger" type="submit">Reject</button>
+        </form>
+        {% if booking.receipt_ready %}
+          <a class="btn secondary" href="{{ url_for('receipt', token=booking.public_token) }}">Receipt</a>
+        {% endif %}
+      </div>
     </article>
   {% else %}
-    <p class="muted">No bookings found.</p>
+    <article class="card"><p class="muted">No bookings yet.</p></article>
   {% endfor %}
 </section>
 {% endblock %}

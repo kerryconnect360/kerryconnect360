@@ -1,20 +1,19 @@
 {% extends 'base.html' %}
-{% block title %}About | City Connect{% endblock %}
+{% block title %}About | {{ brand.site_name if brand else 'Book with Kerry' }}{% endblock %}
 {% block content %}
-<section class="card page-hero">
+<section class="card prose-card">
   <p class="eyebrow">About us</p>
-  <h1>We deliver dependable booking and support.</h1>
-  <p class="lead">City Connect is built for people who want a straightforward service, not a crowded website.</p>
-</section>
-
-<section class="content-grid">
-  <article class="card prose-card">
-    <h2>What we do</h2>
-    <p class="body-copy">We help users submit bookings quickly, receive updates when needed, and reach the team without unnecessary steps.</p>
-  </article>
-  <article class="card prose-card">
-    <h2>How it feels</h2>
-    <p class="body-copy">Clean, modern, and direct on mobile first. The interface is meant to look and act like a working service, not a brochure.</p>
-  </article>
+  <h1>Simple bookings for real travel work.</h1>
+  <p class="lead">{{ brand.about_text if brand else 'A practical booking desk for passengers and operators.' }}</p>
+  <div class="prose-columns">
+    <div>
+      <h2>What we do</h2>
+      <p>We handle seat reservations, payment confirmation, vehicle scheduling, and booking receipts in one place.</p>
+    </div>
+    <div>
+      <h2>How it works</h2>
+      <p>Choose a trip, reserve available seats, send payment, wait for admin approval, then download or share the receipt.</p>
+    </div>
+  </div>
 </section>
 {% endblock %}

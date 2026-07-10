@@ -3,37 +3,42 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#08111f">
+  <meta name="theme-color" content="#0a0f1a">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>{% block title %}{{ brand.site_name if brand else 'Book with Kerry' }}{% endblock %}</title>
   <link rel="manifest" href="{{ url_for('manifest') }}">
-  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
-  <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+  <link rel="icon" href="{{ url_for('favicon') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('favicon') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <title>{% block title %}City Connect{% endblock %}</title>
 </head>
 <body>
-  <div class="backdrop"></div>
-  <div class="page-shell">
-    <header class="masthead">
-      <a class="brand" href="{{ url_for('index') }}" aria-label="City Connect home">
-        <img src="{{ url_for('static', filename='logo.svg') }}" alt="" class="brand-logo">
-        <span class="brand-copy">
-          <strong>City Connect</strong>
-          <small>Bookings made simple.</small>
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+  <div class="bg-orb orb-c"></div>
+
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="logo-wrap" href="{{ url_for('index') }}">
+        <img class="logo-mark" src="{{ brand.logo_url if brand else url_for('static', filename='logo.svg') }}" alt="{{ brand.site_name if brand else 'Book with Kerry' }} logo">
+        <span class="logo-copy">
+          <strong>{{ brand.site_name if brand else 'Book with Kerry' }}</strong>
+          <small>{{ brand.slogan if brand else 'Book seats, travel smoothly.' }}</small>
         </span>
       </a>
 
-      <nav class="nav-links" aria-label="Primary">
+      <nav class="public-nav" aria-label="Site navigation">
         <a href="{{ url_for('index') }}">Home</a>
         <a href="{{ url_for('book') }}">Book</a>
-        <a href="{{ url_for('about') }}">About</a>
+        <a href="{{ url_for('trips') }}">Trips</a>
+        <a href="{{ url_for('track') }}">Track</a>
         <a href="{{ url_for('contact') }}">Contact</a>
       </nav>
     </header>
 
     {% if latest_announcement %}
-      <section class="notice-banner card">
-        <span class="badge">Update</span>
+      <section class="notice-strip">
+        <span class="notice-tag">Notice</span>
         <div>
           <strong>{{ latest_announcement.title }}</strong>
           <p>{{ latest_announcement.body }}</p>
@@ -43,32 +48,32 @@
 
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        <section class="alerts">
+        <div class="flash-stack">
           {% for category, message in messages %}
-            <div class="alert {{ category }}">{{ message }}</div>
+            <div class="flash {{ category }}">{{ message }}</div>
           {% endfor %}
-        </section>
+        </div>
       {% endif %}
     {% endwith %}
 
-    <main>
+    <main class="content-area">
       {% block content %}{% endblock %}
     </main>
 
     <footer class="footer">
       <div>
-        <strong>City Connect</strong>
-        <p>Booking, support, and trip handling with a clean public face.</p>
+        <strong>{{ brand.site_name if brand else 'Book with Kerry' }}</strong>
+        <p>{{ brand.slogan if brand else 'Book seats, travel smoothly.' }}</p>
       </div>
       <div class="footer-links">
-        <a href="{{ url_for('book') }}">Book</a>
-        <a href="{{ url_for('about') }}">About us</a>
+        <a href="{{ url_for('card') }}">Business card</a>
+        <a href="{{ url_for('qr') }}">QR code</a>
         <a href="{{ url_for('contact') }}">Support</a>
       </div>
     </footer>
   </div>
 
-  <button id="installBtn" class="install-btn hidden" aria-label="Install app">Install app</button>
+  <button class="install-btn hidden" id="installBtn">Install app</button>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   <script>
     if ('serviceWorker' in navigator) {

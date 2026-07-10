@@ -1,36 +1,66 @@
 {% extends 'base.html' %}
-{% block title %}Book | City Connect{% endblock %}
+{% block title %}Book | {{ brand.site_name if brand else 'Book with Kerry' }}{% endblock %}
 {% block content %}
-<section class="card page-hero">
-  <p class="eyebrow">Booking request</p>
-  <h1>Reserve a trip in a clean, direct flow with no account needed.</h1>
-  <p class="lead">Enter the journey details and get a reference after submission.</p>
+<section class="card page-head">
+  <p class="eyebrow">Booking</p>
+  <h1>Choose a trip, pick seats, and submit.</h1>
+  <p class="lead">No login. No account. Just the booking itself.</p>
 </section>
 
-<section class="content-grid">
-  <article class="card form-card large-form">
-    <form method="post" class="stack-form">
-      <div class="two-col">
-        <label>Customer name<input name="customer_name" required></label>
-        <label>Phone<input name="phone" placeholder="07xx xxx xxx"></label>
+<section class="section-grid booking-layout">
+  <article class="card form-card booking-form-card">
+    <form method="post" class="stack-form" id="bookingForm">
+      <label>Trip
+        <select name="trip_id" id="tripSelect" required>
+          {% for trip in trips %}
+            <option value="{{ trip.id }}" {% if selected_trip and selected_trip.id == trip.id %}selected{% endif %}>
+              {{ trip.route_name }} — {{ trip.vehicle_name }} — KSh {{ trip.fare_per_seat }}
+            </option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <div class="trip-meta" id="tripMeta">
+        {% if selected_trip %}
+          <strong>{{ selected_trip.route_name }}</strong>
+          <p>{{ selected_trip.vehicle_name }} • {{ selected_trip.vehicle_type }} • {{ selected_trip.total_seats }} seats</p>
+          <small>{{ selected_trip.departure_date }}{% if selected_trip.departure_time %} • {{ selected_trip.departure_time }}{% endif %}</small>
+        {% endif %}
       </div>
-      <div class="two-col">
-        <label>Pickup point<input name="pickup" required></label>
-        <label>Drop-off point<input name="dropoff" required></label>
+
+      <div>
+        <div class="label-row">
+          <label>Customer name<input name="customer_name" required></label>
+          <label>Phone<input name="phone" required></label>
+        </div>
       </div>
-      <div class="three-col">
-        <label>Travel date<input type="date" name="travel_date" required></label>
-        <label>Travel time<input type="time" name="travel_time"></label>
-        <label>Passengers<input type="number" min="1" name="passengers" value="1"></label>
-      </div>
-      <label>Notes<textarea name="notes" rows="5" placeholder="Special instructions, luggage, child seat, and so on."></textarea></label>
+
+      <label>M-Pesa code (optional)<input name="mpesa_code" placeholder="Transaction code"></label>
+      <label>Note<textarea name="note" rows="4" placeholder="A short note if needed"></textarea></label>
+
+      <input type="hidden" name="selected_seats" id="selectedSeatsInput">
       <button class="btn primary" type="submit">Submit booking</button>
     </form>
   </article>
-  <aside class="card prose-card highlight-panel">
-    <p class="eyebrow">What happens next</p>
-    <h2>Your request is stored with a reference number.</h2>
-    <p class="body-copy">The booking can then be handled inside the protected admin area and assigned to a driver when ready.</p>
+
+  <aside class="card seat-card">
+    <div class="seat-head">
+      <div>
+        <p class="eyebrow">Seats</p>
+        <h2>Select available seats</h2>
+      </div>
+      <span class="pill" id="farePill">KSh 0</span>
+    </div>
+    <div id="seatGrid" class="seat-grid"></div>
+    <p class="muted tiny">Selected seats appear here and are reserved only after submission.</p>
   </aside>
 </section>
+
+<script>
+  window.BOOKING_DATA = {
+    selectedTripId: {{ selected_trip.id if selected_trip else 'null' }},
+    tripsUrl: "{{ url_for('api_trips') }}",
+    seatsBase: "{{ url_for('api_trip_seats', trip_id=0)[:-1] }}"
+  };
+</script>
 {% endblock %}

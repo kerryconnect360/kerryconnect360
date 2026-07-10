@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}QR | {{ brand.site_name if brand else 'Book with Kerry' }}{% endblock %}
+{% block content %}
+<section class="card page-head">
+  <p class="eyebrow">QR code</p>
+  <h1>Scan to open the site.</h1>
+  <p class="lead">The QR points to the live homepage automatically.</p>
+</section>
+<section class="section-grid">
+  <article class="card center-card">
+    <img class="qr-image" src="{{ url_for('qr_code_png') }}" alt="QR code">
+    <a class="btn secondary" href="{{ url_for('qr_code_png') }}" download="book-with-kerry-qr.png">Download QR</a>
+  </article>
+  <article class="card">
+    <h2>Where to place it</h2>
+    <p>Put the QR on cards, posters, receipts, and the business profile so users land on the site in one scan.</p>
+  </article>
+</section>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Branding | {{ brand.site_name if brand else 'Book with Kerry' }}{% endblock %}
+{% block content %}
+<section class="card page-head">
+  <p class="eyebrow">Branding</p>
+  <h1>Update the logo, card, and public text.</h1>
+  <p class="lead">The logo uploaded here appears everywhere on the site.</p>
+</section>
+
+<section class="section-grid">
+  <article class="card form-card">
+    <form method="post" enctype="multipart/form-data" class="stack-form">
+      <label>Site name<input name="site_name" value="{{ brand.site_name }}"></label>
+      <label>Slogan<input name="slogan" value="{{ brand.slogan }}"></label>
+      <label>About text<textarea name="about_text" rows="4">{{ brand.about_text }}</textarea></label>
+      <label>Support blurb<textarea name="support_blurb" rows="3">{{ brand.support_blurb }}</textarea></label>
+      <div class="label-row">
+        <label>Phone<input name="contact_phone" value="{{ brand.contact_phone }}"></label>
+        <label>WhatsApp<input name="whatsapp_phone" value="{{ brand.whatsapp_phone }}"></label>
+      </div>
+      <div class="label-row">
+        <label>M-Pesa number<input name="mpesa_number" value="{{ brand.mpesa_number }}"></label>
+        <label>Address<input name="address" value="{{ brand.address }}"></label>
+      </div>
+      <label>Upload logo<input type="file" name="logo" accept=".png,.jpg,.jpeg,.webp,.gif,.svg"></label>
+      <label>Upload business card<input type="file" name="card" accept=".png,.jpg,.jpeg,.webp,.gif,.pdf"></label>
+      <button class="btn primary" type="submit">Save branding</button>
+    </form>
+  </article>
+  <article class="card">
+    <h2>Current logo</h2>
+    <img class="preview-logo" src="{{ brand.logo_url }}" alt="Current logo">
+    {% if brand.card_url %}
+      <h2>Business card</h2>
+      {% if brand.card_filename and brand.card_filename.lower().endswith(('.png','.jpg','.jpeg','.webp','.gif','.svg')) %}
+        <img class="card-image" src="{{ brand.card_url }}" alt="Business card">
+      {% else %}
+        <p>Business card uploaded as a file.</p>
+      {% endif %}
+    {% endif %}
+  </article>
+</section>
+{% endblock %}

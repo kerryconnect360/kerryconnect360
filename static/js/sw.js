@@ -1,21 +1,29 @@
-const CACHE_NAME = 'city-connect-v1';
+
+const CACHE = "book-with-kerry-v1";
 const ASSETS = [
-  '/', '/about', '/services', '/contact', '/book', '/login', '/board/login',
-  '/static/css/style.css', '/static/js/main.js', '/manifest.json', '/static/icons/icon-192.png', '/static/icons/icon-512.png'
+  "/",
+  "/book",
+  "/trips",
+  "/track",
+  "/static/css/style.css",
+  "/static/js/main.js",
+  "/static/logo.svg",
+  "/favicon.ico",
 ];
-
-self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
-  self.skipWaiting();
+self.addEventListener("install", (event) => {
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
 });
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))));
-  self.clients.claim();
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((key) => (key === CACHE ? null : caches.delete(key))))
+    )
+  );
 });
-
-self.addEventListener('fetch', (event) => {
+self.addEventListener("fetch", (event) => {
   event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request).then((cached) => cached || caches.match('/')))
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request).catch(() => caches.match("/"));
+    })
   );
 });

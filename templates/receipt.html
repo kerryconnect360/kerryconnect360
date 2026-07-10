@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Receipt | {{ brand.site_name if brand else 'Book with Kerry' }}{% endblock %}
+{% block content %}
+<section class="card receipt-card">
+  <p class="eyebrow">Receipt</p>
+  <h1>{{ booking.receipt_number or booking.reference }}</h1>
+  <p class="lead">{{ booking.payment_status }}</p>
+
+  <div class="receipt-grid">
+    <div><span>Name</span><strong>{{ booking.customer_name }}</strong></div>
+    <div><span>Reference</span><strong>{{ booking.reference }}</strong></div>
+    <div><span>Trip</span><strong>{{ booking.trip.route_name }}</strong></div>
+    <div><span>Vehicle</span><strong>{{ booking.trip.vehicle_name }}</strong></div>
+    <div><span>Seats</span><strong>{{ booking.seats | join(', ') }}</strong></div>
+    <div><span>Amount</span><strong>KSh {{ booking.amount }}</strong></div>
+    <div><span>M-Pesa code</span><strong>{{ booking.mpesa_code or 'Not entered' }}</strong></div>
+    <div><span>Approved</span><strong>{% if booking.approved_at %}{{ booking.approved_at.strftime('%d %b %Y') }}{% else %}Pending{% endif %}</strong></div>
+  </div>
+
+  <div class="hero-actions">
+    <a class="btn primary" href="https://wa.me/?text={{ ('Receipt ' ~ booking.reference ~ ' for ' ~ booking.customer_name ~ ' is ready. ' ~ url_for('receipt', token=booking.public_token, _external=True)) | urlencode }}">Share to WhatsApp</a>
+    <button class="btn secondary" onclick="window.print()">Print receipt</button>
+    <a class="btn secondary" href="{{ url_for('track') }}">Track another</a>
+  </div>
+</section>
+{% endblock %}
