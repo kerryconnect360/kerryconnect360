@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Setup | City Connect{% endblock %}
+{% block content %}
+<section class="card page-hero">
+  <span class="kicker">Initial setup</span>
+  <h1>Create the first admin account.</h1>
+  <p class="lead">The very first user automatically becomes admin and can add other users later from the board.</p>
+</section>
+<section class="card form-card">
+  <form method="post" class="stack-form">
+    <label>Full name<input name="full_name" required></label>
+    <label>Email<input type="email" name="email" required></label>
+    <label>Password<input type="password" name="password" minlength="6" required></label>
+    <button class="btn primary" type="submit">Create admin</button>
+  </form>
+</section>
+{% endblock %}

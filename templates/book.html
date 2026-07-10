@@ -3,8 +3,8 @@
 {% block content %}
 <section class="card page-head">
   <p class="eyebrow">Booking</p>
-  <h1>Choose a trip, pick seats, and submit.</h1>
-  <p class="lead">No login. No account. Just the booking itself.</p>
+  <h1>Book the current available vehicle.</h1>
+  <p class="lead">Only the first open vehicle in the queue can take bookings right now.</p>
 </section>
 
 <section class="section-grid booking-layout">
@@ -25,6 +25,9 @@
           <strong>{{ selected_trip.route_name }}</strong>
           <p>{{ selected_trip.vehicle_name }} • {{ selected_trip.vehicle_type }} • {{ selected_trip.total_seats }} seats</p>
           <small>{{ selected_trip.departure_date }}{% if selected_trip.departure_time %} • {{ selected_trip.departure_time }}{% endif %}</small>
+          {% if not trip_is_bookable(selected_trip) %}
+            <div class="queue-alert">This vehicle is in the queue. Please book the current available one first.</div>
+          {% endif %}
         {% endif %}
       </div>
 

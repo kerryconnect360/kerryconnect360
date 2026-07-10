@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Users | {{ brand.site_name if brand else 'Book with Kerry' }}{% endblock %}
+{% block title %}Drivers | {{ brand.site_name if brand else 'Book with Kerry' }}{% endblock %}
 {% block content %}
 <section class="card page-head">
-  <p class="eyebrow">Users</p>
-  <h1>Add admins and drivers.</h1>
-  <p class="lead">Drivers can only log in after admin creates their account.</p>
+  <p class="eyebrow">Drivers</p>
+  <h1>Add drivers only.</h1>
+  <p class="lead">Drivers can log in after admin creates their account.</p>
 </section>
 
 <section class="section-grid">
@@ -13,17 +13,11 @@
       <label>Full name<input name="full_name" required></label>
       <label>Username<input name="username" required></label>
       <label>Password<input type="password" name="password" required></label>
-      <label>Role
-        <select name="role">
-          <option value="driver">Driver</option>
-          <option value="admin">Admin</option>
-        </select>
-      </label>
-      <button class="btn primary" type="submit">Create user</button>
+      <button class="btn primary" type="submit">Create driver</button>
     </form>
   </article>
   <article class="card">
-    <h2>Existing users</h2>
+    <h2>Existing drivers</h2>
     <div class="list-stack">
       {% for user in users %}
         <div class="list-item">
@@ -31,14 +25,10 @@
             <strong>{{ user.full_name }}</strong>
             <p>{{ user.username }} • {{ user.role }}</p>
           </div>
-          {% if user.role != 'admin' %}
-            <form method="post" action="{{ url_for('board_user_toggle', user_id=user.id) }}">
-              <button class="btn secondary" type="submit">{% if user.active %}Disable{% else %}Enable{% endif %}</button>
-            </form>
-          {% else %}
-            <span class="pill">Admin</span>
-          {% endif %}
+          <span class="pill">Driver</span>
         </div>
+      {% else %}
+        <p class="muted">No drivers yet.</p>
       {% endfor %}
     </div>
   </article>

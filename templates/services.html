@@ -19,8 +19,12 @@
       <p>{{ trip.vehicle_name }}</p>
       <p>{{ trip.origin or 'Origin' }} → {{ trip.destination or 'Destination' }}</p>
       <p>{{ trip.departure_date }}{% if trip.departure_time %} • {{ trip.departure_time }}{% endif %}</p>
-      <p>{{ trip.total_seats }} seats</p>
-      <a class="btn primary" href="{{ url_for('book', trip_id=trip.id) }}">Book seats</a>
+      <p>{{ trip.total_seats }} seats • {{ trip_remaining_seats(trip) }} left</p>
+      {% if trip_is_bookable(trip) %}
+        <a class="btn primary" href="{{ url_for('book', trip_id=trip.id) }}">Book now</a>
+      {% else %}
+        <span class="pill soft">Queue {{ trip_queue_position(trip) }}{% if trip_queue_position(trip) %} waiting{% endif %}</span>
+      {% endif %}
     </article>
   {% else %}
     <article class="card">

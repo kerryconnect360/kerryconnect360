@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}Your App | City Connect{% endblock %}
+{% block content %}
+<section class="card page-hero hero-split">
+  <div>
+    <span class="kicker">Customer portal</span>
+    <h1>Welcome back, {{ current_user.full_name }}.</h1>
+    <p class="lead">Track your bookings, read announcements, and make new requests from this private area.</p>
+  </div>
+  <div class="hero-panel small">
+    <strong>{{ my_bookings|length }}</strong>
+    <span>Your bookings</span>
+    <div class="button-row compact">
+      <a class="btn secondary" href="{{ url_for('book') }}">New booking</a>
+      <a class="btn ghost" href="{{ url_for('app_profile') }}">Profile</a>
+    </div>
+  </div>
+</section>
+
+<section class="content-grid">
+  <article class="card form-card">
+    <h2>Quick booking</h2>
+    <form method="post" action="{{ url_for('app_create_booking') }}" class="stack-form">
+      <div class="two-col">
+        <label>Customer name<input name="customer_name" value="{{ current_user.full_name }}" required></label>
+        <label>Phone<input name="phone"></label>
+      </div>
+      <div class="two-col">
+        <label>Pickup<input name="pickup" required></label>
+        <label>Drop-off<input name="dropoff" required></label>
+      </div>
+      <div class="three-col">
+        <label>Date<input type="date" name="travel_date" required></label>
+        <label>Time<input type="time" name="travel_time"></label>
+        <label>Passengers<input type="number" min="1" name="passengers" value="1"></label>
+      </div>
+      <label>Notes<textarea name="notes" rows="4"></textarea></label>
+      <button class="btn primary" type="submit">Save booking</button>
+    </form>
+  </article>
+
+  <article class="card">
+    <h2>Announcements</h2>
+    {% if announcements %}
+      <div class="stack-list">
+        {% for item in announcements %}
+          <div class="notice-item">
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.body }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted">No updates yet.</p>
+    {% endif %}
+  </article>
+</section>
+
+<section class="card list-card">
+  <h2>Your bookings</h2>
+  {% if my_bookings %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ref</th><th>Route</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for booking in my_bookings %}
+          <tr>
+            <td>{{ booking.reference }}</td>
+            <td>{{ booking.pickup }} → {{ booking.dropoff }}</td>
+            <td>{{ booking.travel_date }}</td>
+            <td><span class="status status-{{ booking.status|lower }}">{{ booking.status }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="muted">You have no bookings yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

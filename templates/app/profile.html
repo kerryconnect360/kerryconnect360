@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Profile | City Connect{% endblock %}
+{% block content %}
+<section class="card page-hero">
+  <span class="kicker">Profile</span>
+  <h1>{{ current_user.full_name }}</h1>
+  <p class="lead">{{ current_user.email }} • {{ current_user.role|capitalize }}</p>
+</section>
+{% endblock %}

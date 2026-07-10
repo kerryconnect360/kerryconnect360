@@ -40,6 +40,13 @@ async function renderSeats(tripId) {
   const seats = data.seats || [];
   const selected = new Set((selectedSeatsInput.value || "").split(",").map(s => s.trim()).filter(Boolean));
 
+  if (data.queue_locked || data.can_book === false) {
+    seatGrid.innerHTML = "<p class='muted'>This vehicle is waiting in the posting queue. Please book the current available vehicle first.</p>";
+    selectedSeatsInput.value = "";
+    if (farePill) farePill.textContent = `KSh ${trip.fare_per_seat || 0}`;
+    return;
+  }
+
   if (tripMeta) {
     tripMeta.innerHTML = `
       <strong>${trip.route_name}</strong>

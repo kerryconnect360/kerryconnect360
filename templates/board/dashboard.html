@@ -4,10 +4,12 @@
 <section class="card page-head admin-head">
   <p class="eyebrow">Admin board</p>
   <h1>Manage the site behind the scenes.</h1>
+  {% if current_admin %}<p class="lead">Signed in as {{ current_admin.full_name }}.</p>{% endif %}
   <p class="lead">Branding, users, trips, bookings, and notices stay here.</p>
   <div class="hero-actions">
     <a class="btn primary" href="{{ url_for('board_settings') }}">Branding</a>
-    <a class="btn secondary" href="{{ url_for('board_users') }}">Users</a>
+    <a class="btn secondary" href="{{ url_for('board_admins') }}">Admins</a>
+    <a class="btn secondary" href="{{ url_for('board_users') }}">Drivers</a>
     <a class="btn secondary" href="{{ url_for('board_trips') }}">Trips</a>
     <a class="btn secondary" href="{{ url_for('board_bookings') }}">Bookings</a>
     <a class="btn secondary" href="{{ url_for('board_announcements') }}">Notices</a>
@@ -15,7 +17,7 @@
 </section>
 
 <section class="section-grid slim">
-  <article class="card metric"><span>Users</span><strong>{{ users|length }}</strong></article>
+  <article class="card metric"><span>Drivers</span><strong>{{ users|length }}</strong></article>
   <article class="card metric"><span>Trips</span><strong>{{ trips|length }}</strong></article>
   <article class="card metric"><span>Bookings</span><strong>{{ bookings|length }}</strong></article>
   <article class="card metric"><span>Notices</span><strong>{{ announcements|length }}</strong></article>

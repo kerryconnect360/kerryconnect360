@@ -14,12 +14,17 @@
   </div>
   <div class="hero-summary">
     <div class="summary-card">
-      <span>Payments</span>
-      <strong>M-Pesa {{ brand.mpesa_number if brand else '0712648079' }}</strong>
-      <small>Approved manually by admin</small>
+      <span>Now booking</span>
+      {% if bookable_trip %}
+        <strong>{{ bookable_trip.route_name }}</strong>
+        <small>{{ bookable_trip.vehicle_name }} • {{ trip_remaining_seats(bookable_trip) }} seats left</small>
+      {% else %}
+        <strong>No open vehicle</strong>
+        <small>New runs will appear here</small>
+      {% endif %}
     </div>
     <div class="summary-card">
-      <span>Public support</span>
+      <span>Support</span>
       <strong>{{ brand.contact_phone if brand else '0712648079' }}</strong>
       <small>{{ brand.address if brand else 'Open 24/7 for bookings' }}</small>
     </div>
@@ -29,8 +34,8 @@
 <section class="section-grid">
   <article class="card feature-card">
     <p class="eyebrow">Trips</p>
-    <h2>Current vehicles with seats ready.</h2>
-    <p>Pick a route, choose seats, and submit a booking without creating an account.</p>
+    <h2>Current vehicles in posting order.</h2>
+    <p>Only the first available vehicle can accept bookings until it fills up.</p>
     {% if trips %}
       <div class="trip-list">
         {% for trip in trips %}

@@ -10,19 +10,16 @@ A public booking site with:
 - uploadable logo and business card
 - QR code that opens the live site
 
-## Default admin
-If no admin exists, the app seeds one from environment variables or defaults:
+## Admin setup
+Admin accounts now live in a separate SQLite file named `city.db`.
 
-- username: `admin`
-- password: `Admin123!`
-
-Set your own values in production:
-- `ADMIN_USERNAME`
-- `ADMIN_PASSWORD`
-- `ADMIN_NAME`
+- The first admin is created from `/board/register`
+- After the first admin exists, registration is hidden and only `/board/login` remains
+- Additional admins can be created inside the board after login
 
 ## Notes
 - Public users do not register or log in.
 - Admin can upload branding from the settings page.
 - Drivers are created by admin and only sign in.
-- Bookings are stored in SQLite by default, so the app survives rebuilds when the database file is preserved.
+- Bookings stay in the main app database, while admin access uses `city.db`.
+- If you keep both database files, the site survives rebuilds without losing data.
