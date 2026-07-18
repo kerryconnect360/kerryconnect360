@@ -1,4 +1,4 @@
-# Book with Kerry
+# Book with Kerrie
 
 A public booking site with:
 - user-facing bookings without login

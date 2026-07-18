@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
-{% block title %}{{ brand.site_name if brand else 'Book with Kerry' }}{% endblock %}
+{% block title %}{{ brand.site_name if brand else 'Book with Kerrie' }}{% endblock %}
 {% block content %}
 <section class="hero card">
   <div class="hero-brand">
-    <img class="hero-logo" src="{{ brand.logo_url if brand else url_for('static', filename='logo.svg') }}" alt="{{ brand.site_name if brand else 'Book with Kerry' }}">
+    <img class="hero-logo" src="{{ brand.logo_url if brand else url_for('static', filename='logo.svg') }}" alt="{{ brand.site_name if brand else 'Book with Kerrie' }}">
     <p class="eyebrow">Public booking desk</p>
-    <h1>{{ brand.site_name if brand else 'Book with Kerry' }}</h1>
+    <h1>{{ brand.site_name if brand else 'Book with Kerrie' }}</h1>
     <p class="lead">{{ brand.support_blurb if brand else 'A practical booking site for trips, seats, and approved receipts.' }}</p>
     <div class="hero-actions">
       <a class="btn primary" href="{{ url_for('book') }}">Book a seat</a>

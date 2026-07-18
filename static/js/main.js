@@ -91,3 +91,37 @@ document.querySelectorAll(".flash").forEach((el) => {
     el.style.transform = "translateY(-4px)";
   }, 5000);
 });
+
+
+const THEME_KEY = "kerrie-theme";
+const SIDEBAR_KEY = "kerrie-sidebar";
+
+function applyTheme(themeName) {
+  const themes = ["theme-kerrie-orange", "theme-sunrise", "theme-clean", "theme-midnight"];
+  themes.forEach((theme) => document.body.classList.remove(theme));
+  document.body.classList.add(`theme-${themeName}`);
+  localStorage.setItem(THEME_KEY, themeName);
+}
+
+function applySidebarState(collapsed) {
+  document.body.classList.toggle("sidebar-collapsed", collapsed);
+  localStorage.setItem(SIDEBAR_KEY, collapsed ? "1" : "0");
+}
+
+const savedTheme = localStorage.getItem(THEME_KEY);
+if (savedTheme) {
+  applyTheme(savedTheme);
+}
+const savedSidebar = localStorage.getItem(SIDEBAR_KEY);
+if (savedSidebar !== null) {
+  applySidebarState(savedSidebar === "1");
+}
+
+document.querySelectorAll("[data-theme-choice]").forEach((button) => {
+  button.addEventListener("click", () => applyTheme(button.dataset.themeChoice));
+});
+
+const sidebarToggle = document.getElementById("sidebarToggle");
+sidebarToggle?.addEventListener("click", () => {
+  applySidebarState(!document.body.classList.contains("sidebar-collapsed"));
+});

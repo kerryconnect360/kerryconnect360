@@ -71,7 +71,7 @@ def now_utc():
 
 class Branding(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    site_name = db.Column(db.String(120), nullable=False, default="Book with Kerry")
+    site_name = db.Column(db.String(120), nullable=False, default="Book with Kerrie")
     slogan = db.Column(db.String(180), nullable=False, default="Book seats, travel smoothly.")
     about_text = db.Column(db.Text, nullable=False, default="A practical booking desk for passengers and operators.")
     support_blurb = db.Column(db.Text, nullable=False, default="Send a booking request, confirm payment, and travel with ease.")
@@ -94,6 +94,13 @@ class Branding(db.Model):
         if self.card_filename:
             return url_for("uploaded_file", filename=self.card_filename)
         return None
+
+class SiteAppearance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    theme_name = db.Column(db.String(40), nullable=False, default="kerrie-orange")
+    sidebar_mode = db.Column(db.String(20), nullable=False, default="open")
+    updated_at = db.Column(db.DateTime, default=now_utc, onupdate=now_utc, nullable=False)
+
 
 
 class User(db.Model):
@@ -282,10 +289,20 @@ def first_or_create_brand():
     return brand
 
 
+def first_or_create_appearance():
+    appearance = SiteAppearance.query.first()
+    if not appearance:
+        appearance = SiteAppearance()
+        db.session.add(appearance)
+        db.session.commit()
+    return appearance
+
+
 with app.app_context():
     db.create_all()
     init_admin_db()
     first_or_create_brand()
+    first_or_create_appearance()
     if Announcement.query.count() == 0:
         db.session.add(
             Announcement(
@@ -300,6 +317,7 @@ with app.app_context():
 @app.context_processor
 def inject_globals():
     brand = Branding.query.first()
+    appearance = SiteAppearance.query.first()
     user = None
     admin = None
     if session.get("user_id"):
@@ -309,6 +327,7 @@ def inject_globals():
     active_announcement = Announcement.query.filter_by(active=True).order_by(Announcement.created_at.desc()).first()
     return {
         "brand": brand,
+        "appearance": appearance,
         "current_user": user,
         "current_admin": admin,
         "latest_announcement": active_announcement,
@@ -775,6 +794,7 @@ def board_dashboard():
 @login_required(role="admin")
 def board_settings():
     brand = find_brand()
+    appearance = first_or_create_appearance()
     if request.method == "POST":
         brand.site_name = request.form.get("site_name", brand.site_name).strip() or brand.site_name
         brand.slogan = request.form.get("slogan", brand.slogan).strip() or brand.slogan
@@ -784,6 +804,9 @@ def board_settings():
         brand.whatsapp_phone = request.form.get("whatsapp_phone", brand.whatsapp_phone).strip() or brand.whatsapp_phone
         brand.mpesa_number = request.form.get("mpesa_number", brand.mpesa_number).strip() or brand.mpesa_number
         brand.address = request.form.get("address", brand.address).strip() or brand.address
+
+        appearance.theme_name = request.form.get("theme_name", appearance.theme_name).strip() or appearance.theme_name
+        appearance.sidebar_mode = request.form.get("sidebar_mode", appearance.sidebar_mode).strip() or appearance.sidebar_mode
 
         logo = request.files.get("logo")
         card = request.files.get("card")
@@ -801,10 +824,10 @@ def board_settings():
             brand.card_filename = new_card
 
         db.session.commit()
-        flash("Branding updated across the site.", "success")
+        flash("Branding and site style updated.", "success")
         return redirect(url_for("board_settings"))
 
-    return render_template("board/settings.html", brand=brand)
+    return render_template("board/settings.html", brand=brand, appearance=appearance)
 
 
 @app.route("/board/admins", methods=["GET", "POST"])
