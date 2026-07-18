@@ -1,5 +1,5 @@
 
-const CACHE = "book-with-kerry-v1";
+const CACHE = "book-with-kerrie-v1";
 const ASSETS = [
   "/",
   "/book",
