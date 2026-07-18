@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Login | City Connect{% endblock %}
+{% block content %}
+<section class="content-grid login-grid">
+  <article class="card page-hero">
+    <span class="kicker">Sign in</span>
+    <h1>Access your account</h1>
+    <p class="lead">Customers and staff use the same login page. Admins are redirected to the board automatically.</p>
+  </article>
+  <article class="card form-card">
+    <form method="post" class="stack-form">
+      <label>Email<input type="email" name="email" required></label>
+      <label>Password<input type="password" name="password" required></label>
+      <button class="btn primary" type="submit">Login</button>
+    </form>
+    {% if first_user_setup_needed %}
+    <p class="muted helper">No account exists yet. Create the first admin instead.</p>
+    <a class="btn secondary full" href="{{ url_for('setup') }}">Create first admin</a>
+    {% endif %}
+  </article>
+</section>
+{% endblock %}

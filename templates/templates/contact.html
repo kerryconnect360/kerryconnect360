@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Contact | {{ brand.site_name if brand else 'Book with Kerrie' }}{% endblock %}
+{% block content %}
+<section class="card page-head">
+  <p class="eyebrow">Contact</p>
+  <h1>Talk to the booking desk.</h1>
+  <p class="lead">For help, route questions, or trip details, send a message here.</p>
+</section>
+
+<section class="section-grid">
+  <article class="card form-card">
+    <form method="post" class="stack-form">
+      <label>Name<input name="name" required></label>
+      <label>Phone<input name="phone" required></label>
+      <label>Subject<input name="subject" required></label>
+      <label>Message<textarea name="message" rows="6" required></textarea></label>
+      <button class="btn primary" type="submit">Send message</button>
+    </form>
+  </article>
+  <article class="card info-card">
+    <h2>Direct contact</h2>
+    <p>{{ brand.contact_phone if brand else '0712648079' }}</p>
+    <p>WhatsApp: {{ brand.whatsapp_phone if brand else '0712648079' }}</p>
+    <p>{{ brand.address if brand else 'Open 24/7 for bookings' }}</p>
+  </article>
+</section>
+{% endblock %}

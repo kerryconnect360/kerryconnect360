@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Admin login | Book with Kerrie</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-body theme-kerrie-orange">
+  <main class="auth-shell">
+    <section class="card auth-card">
+      <img class="auth-logo" src="{{ brand.logo_url if brand else url_for('static', filename='logo.svg') }}" alt="logo">
+      <h1>Admin board</h1>
+      <p class="lead">Protected access only.</p>
+      <form method="post" class="stack-form">
+        <label>Username<input name="username" required></label>
+        <label>Password<input type="password" name="password" required></label>
+        <button class="btn primary" type="submit">Log in</button>
+      </form>
+      {% if admin_count() == 0 %}
+        <a class="btn secondary" href="{{ url_for('board_register') }}">Create first admin</a>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>
