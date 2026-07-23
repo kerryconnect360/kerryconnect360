@@ -28,7 +28,7 @@
       </a>
 
       <div class="topbar-actions">
-        <button class="btn ghost sidebar-toggle" type="button" id="sidebarToggle">More options</button>
+        <button class="btn ghost sidebar-toggle" type="button" id="sidebarToggle">Options</button>
         <nav class="public-nav" aria-label="Site navigation">
           <a href="{{ url_for('index') }}">Home</a>
           <a href="{{ url_for('book') }}">Book</a>
@@ -65,25 +65,21 @@
       </main>
 
       <aside class="site-sidebar">
-        <section class="sidebar-card">
-          <p class="eyebrow">More options</p>
-          <h3>Style chooser</h3>
-          <p class="muted tiny">Pick a look for your screen. The admin can set the default in Branding & style.</p>
-          <div class="theme-picker" role="group" aria-label="Theme chooser">
-            <button class="btn secondary theme-choice" type="button" data-theme-choice="kerrie-orange">Kerrie Orange</button>
-            <button class="btn secondary theme-choice" type="button" data-theme-choice="sunrise">Sunrise White</button>
-            <button class="btn secondary theme-choice" type="button" data-theme-choice="clean">Clean Blue</button>
-            <button class="btn secondary theme-choice" type="button" data-theme-choice="midnight">Midnight Gold</button>
+        <section class="sidebar-card sidebar-card--compact">
+          <p class="eyebrow">Settings</p>
+          <div class="sidebar-links sidebar-links--compact">
+            <a href="{{ url_for('landing', panel='theme') }}"><span class="sidebar-mark">•</span> Themes and colors</a>
+            <a href="{{ url_for('landing', panel='font') }}"><span class="sidebar-mark">•</span> Font and adjustments</a>
+            <button class="sidebar-action" type="button" data-light-toggle><span class="sidebar-mark">•</span> Adjust Light</button>
           </div>
         </section>
 
-        <section class="sidebar-card">
-          <p class="eyebrow">Quick links</p>
-          <div class="sidebar-links">
-            <a href="{{ url_for('book') }}">Book a seat</a>
-            <a href="{{ url_for('card') }}">Business card</a>
-            <a href="{{ url_for('qr') }}">QR code</a>
-            <a href="{{ url_for('faq') }}">FAQs</a>
+        <section class="sidebar-card sidebar-card--compact">
+          <p class="eyebrow">Help</p>
+          <div class="sidebar-links sidebar-links--compact">
+            <a href="{{ url_for('faq') }}"><span class="sidebar-mark">•</span> How to use site and install PWA app</a>
+            <a href="{{ url_for('ratings') }}"><span class="sidebar-mark">•</span> Rate our services</a>
+            <a href="{{ url_for('about') }}"><span class="sidebar-mark">•</span> About us</a>
           </div>
         </section>
 
@@ -97,9 +93,9 @@
         <p>{{ brand.slogan if brand else 'Book seats, travel smoothly.' }}</p>
       </div>
       <div class="footer-links">
-        <a href="{{ url_for('card') }}">Business card</a>
-        <a href="{{ url_for('qr') }}">QR code</a>
-        <a href="{{ url_for('contact') }}">Support</a>
+        <a href="{{ url_for('faq') }}">How to use</a>
+        <a href="{{ url_for('ratings') }}">Rate us</a>
+        <a href="{{ url_for('about') }}">About us</a>
       </div>
     </footer>
   </div>
