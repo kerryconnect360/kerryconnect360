@@ -1,7 +1,4 @@
 :root{
-  --carpet-red:#a61d24;
-  --carpet-red-soft:#d73a49;
-
   --bg-1:#fff3df;
   --bg-2:#fffaf4;
   --bg-3:#eef9ff;
@@ -266,8 +263,3 @@ input:focus,select:focus,textarea:focus{border-color:rgba(255,159,28,.65);box-sh
   .ig-nav__item small{font-size:.66rem}
   .ig-nav__caption{display:none}
 }
-
-.sidebar-mark{color:var(--carpet-red); font-weight:900; flex:0 0 auto}
-body.light-adjusted{filter:brightness(1.05) saturate(1.02)}
-.qr-image--modal{max-width:260px; width:100%; margin:0 auto; display:block}
-.modal-actions--stack{display:flex; flex-direction:column; gap:10px; margin-top:12px}

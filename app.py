@@ -6,12 +6,9 @@ import secrets
 from functools import wraps
 from pathlib import Path
 
-from io import BytesIO
-from types import SimpleNamespace
-
 from flask import (
     Flask, flash, jsonify, redirect, render_template, request,
-    send_file, send_from_directory, session, url_for
+    send_from_directory, session, url_for
 )
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
@@ -180,43 +177,6 @@ def save_upload(file_storage, prefix: str) -> str:
     return f'uploads/{out_name}'
 
 
-def build_brand_context():
-    site_name = get_setting('brand_name', 'Book with Kerrie')
-    tagline = get_setting('brand_tagline', 'Elegant booking for calm, fast transport handoffs.')
-    support_phone = get_setting('support_phone', '254 712 648079')
-    support_email = get_setting('support_email', 'support@kerrie.co.ke')
-    about_text = get_setting('about_text', 'Kerrie is a private transport desk for vehicles, drivers, and dispatch-ready bookings.')
-    business_card_text = get_setting('business_card_text', 'Book with Kerrie · Private transport reservations · Dispatch support')
-    brand_logo_file = get_setting('brand_logo_file', '')
-    business_card_file = get_setting('business_card_file', '')
-    logo_url = url_for('static', filename=brand_logo_file) if brand_logo_file else url_for('static', filename='logo.svg')
-    card_url = url_for('static', filename=business_card_file) if business_card_file else ""
-    qr_label = get_setting('qr_label', 'Scan for booking desk')
-    return SimpleNamespace(
-        site_name=site_name,
-        slogan=tagline,
-        support_blurb=tagline,
-        support_phone=support_phone,
-        whatsapp_phone=support_phone,
-        contact_phone=support_phone,
-        support_email=support_email,
-        address=about_text,
-        about_text=about_text,
-        mpesa_number=support_phone,
-        business_card_text=business_card_text,
-        business_card_file=business_card_file,
-        card_filename=business_card_file,
-        card_url=card_url,
-        logo_url=logo_url,
-        qr_label=qr_label,
-    )
-
-
-@app.context_processor
-def inject_brand():
-    return {'brand': build_brand_context()}
-
-
 def setup_defaults():
     if not SiteSetting.query.first():
         for key, value in {
@@ -292,56 +252,6 @@ def assign_vehicle_to_booking(preferred_operator: str, vehicle_type: str, passen
     if vehicles:
         return vehicles[0].name, vehicles[0].driver_name or 'Dispatch team'
     return None, None
-
-
-def trip_records():
-    trips = []
-    for vehicle in Vehicle.query.order_by(Vehicle.created_at.desc()).all():
-        seats = int(vehicle.seats or 0)
-        trips.append(SimpleNamespace(
-            id=vehicle.id,
-            route_name=vehicle.category or vehicle.name,
-            vehicle_name=vehicle.name,
-            vehicle_type=vehicle.category or 'Vehicle',
-            fare_per_seat=max(250, 400 + seats * 50 + int((vehicle.priority_score or 0) * 3)),
-            origin='Boarding point',
-            destination=vehicle.operator_name or 'Destination',
-            departure_date=datetime.utcnow().strftime('%Y-%m-%d'),
-            departure_time='08:00',
-            total_seats=seats or 4,
-            operator_name=vehicle.operator_name,
-            driver_name=vehicle.driver_name,
-            status=vehicle.status,
-        ))
-    return trips
-
-
-def trip_is_bookable(trip):
-    return True
-
-
-def trip_remaining_seats(trip):
-    return int(getattr(trip, 'total_seats', 0) or 0)
-
-
-def trip_queue_position(trip):
-    return 0
-
-
-def booking_track_view(booking):
-    seats = [str(i + 1) for i in range(int(getattr(booking, 'passengers', 1) or 1))]
-    return SimpleNamespace(
-        reference=booking.reference,
-        receipt_number=booking.reference,
-        customer_name=booking.full_name,
-        payment_status='Approved' if booking.status and booking.status.lower() != 'pending' else 'Pending',
-        trip=SimpleNamespace(route_name=booking.vehicle_type or 'Trip', vehicle_name=booking.assigned_vehicle or 'Vehicle'),
-        seats=seats,
-        amount=max(250, int((booking.passengers or 1) * 500)),
-        mpesa_code=None,
-        approved_at=booking.created_at if booking.status and booking.status.lower() != 'pending' else None,
-        public_token=booking.reference,
-    )
 
 
 @app.route('/')
@@ -663,157 +573,6 @@ def driver_dashboard():
     driver = db.session.get(Driver, int(session['driver_id']))
     bookings = Booking.query.order_by(Booking.created_at.desc()).limit(6).all()
     return render_template('driver/dashboard.html', driver=driver, bookings=bookings)
-
-
-@app.route('/index')
-def index():
-    return redirect(url_for('landing'))
-
-
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
-
-@app.route('/contact', methods=['GET', 'POST'])
-def contact():
-    if request.method == 'POST':
-        flash('Thanks. Your message was captured.', 'success')
-        return redirect(url_for('contact'))
-    return render_template('contact.html')
-
-
-@app.route('/faq')
-def faq():
-    return render_template('faq.html')
-
-
-@app.route('/setup')
-def setup_page():
-    return redirect(url_for('ops_entry'))
-
-
-@app.route('/trips')
-def trips():
-    return render_template('services.html', trips=trip_records(), trip_remaining_seats=trip_remaining_seats, trip_is_bookable=trip_is_bookable, trip_queue_position=trip_queue_position)
-
-
-@app.route('/book', methods=['GET', 'POST'])
-def book():
-    trips_list = trip_records()
-    selected_trip = trips_list[0] if trips_list else None
-    if request.method == 'POST':
-        trip_id = int(request.form.get('trip_id', 0) or 0)
-        selected_trip = next((trip for trip in trips_list if trip.id == trip_id), selected_trip)
-        booking = Booking(
-            reference=f'KERRIE-{secrets.token_hex(3).upper()}',
-            full_name=request.form.get('customer_name', '').strip() or 'Guest',
-            phone=request.form.get('phone', '').strip() or 'Unknown',
-            pickup='Trip booking',
-            dropoff=getattr(selected_trip, 'route_name', 'Trip'),
-            preferred_operator=getattr(selected_trip, 'operator_name', None),
-            vehicle_type=getattr(selected_trip, 'vehicle_type', 'Vehicle'),
-            passengers=max(1, len([s for s in request.form.get('selected_seats', '').split(',') if s.strip()])),
-            journey_date=datetime.utcnow().strftime('%Y-%m-%d'),
-            journey_time='08:00',
-            luggage='Light',
-            notes=request.form.get('note', '').strip() or None,
-            status='Pending',
-            assigned_vehicle=getattr(selected_trip, 'vehicle_name', None),
-            assigned_driver=getattr(selected_trip, 'driver_name', None),
-        )
-        db.session.add(booking)
-        db.session.commit()
-        flash('Booking captured. Receipt opened.', 'success')
-        return redirect(url_for('receipt', reference=booking.reference))
-    return render_template('book.html', trips=trips_list, selected_trip=selected_trip, trip_is_bookable=trip_is_bookable, trip_remaining_seats=trip_remaining_seats, trip_queue_position=trip_queue_position)
-
-
-@app.route('/track', methods=['GET', 'POST'])
-def track():
-    booking_view = None
-    if request.method == 'POST':
-        reference = request.form.get('reference', '').strip()
-        phone = request.form.get('phone', '').strip()
-        booking = Booking.query.filter_by(reference=reference, phone=phone).first()
-        if booking:
-            booking_view = booking_track_view(booking)
-        else:
-            flash('No booking matched that reference and phone.', 'warning')
-    return render_template('track.html', booking=booking_view)
-
-
-@app.route('/api/trips')
-def api_trips():
-    trips_list = trip_records()
-    return jsonify([{
-        'id': trip.id,
-        'route_name': trip.route_name,
-        'vehicle_name': trip.vehicle_name,
-        'vehicle_type': trip.vehicle_type,
-        'fare_per_seat': trip.fare_per_seat,
-        'total_seats': trip.total_seats,
-        'departure_date': trip.departure_date,
-        'departure_time': trip.departure_time,
-    } for trip in trips_list])
-
-
-@app.route('/api/trips/<int:trip_id>/seats')
-def api_trip_seats(trip_id):
-    trip = next((trip for trip in trip_records() if trip.id == trip_id), None)
-    if not trip:
-        return jsonify({'trip': None, 'seats': [], 'queue_locked': True, 'can_book': False}), 404
-    seats = [{'label': str(i + 1), 'taken': False} for i in range(int(trip.total_seats or 0))]
-    return jsonify({'trip': {
-        'id': trip.id,
-        'route_name': trip.route_name,
-        'vehicle_name': trip.vehicle_name,
-        'vehicle_type': trip.vehicle_type,
-        'total_seats': trip.total_seats,
-        'fare_per_seat': trip.fare_per_seat,
-        'departure_date': trip.departure_date,
-        'departure_time': trip.departure_time,
-    }, 'seats': seats, 'queue_locked': False, 'can_book': True})
-
-
-@app.route('/card')
-def card():
-    return render_template('card.html', brand=build_brand_context())
-
-
-@app.route('/card/download')
-def card_download():
-    brand = build_brand_context()
-    if not brand.card_filename:
-        flash('No business card has been uploaded yet.', 'warning')
-        return redirect(url_for('card'))
-    safe_name = Path(brand.card_filename).name
-    card_path = UPLOAD_DIR / safe_name
-    if not card_path.exists():
-        flash('The uploaded card file is missing.', 'warning')
-        return redirect(url_for('card'))
-    return send_from_directory(UPLOAD_DIR, safe_name, as_attachment=True, download_name=safe_name)
-
-
-@app.route('/qr')
-def qr():
-    return render_template('qr.html', brand=build_brand_context())
-
-
-@app.route('/qr-code.png')
-def qr_code_png():
-    import qrcode
-    site_url = request.url_root.rstrip('/') + url_for('landing')
-    img = qrcode.make(site_url)
-    buf = BytesIO()
-    img.save(buf, format='PNG')
-    buf.seek(0)
-    return send_file(buf, mimetype='image/png', download_name='kerrie-qr.png')
-
-
-@app.route('/ratings')
-def ratings():
-    return redirect(url_for('landing', _anchor='ratings'))
 
 
 @app.route('/manifest.webmanifest')
