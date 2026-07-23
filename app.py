@@ -1,6 +1,5 @@
 
 from datetime import datetime
-import io
 import os
 import random
 import secrets
@@ -9,7 +8,7 @@ from pathlib import Path
 
 from flask import (
     Flask, flash, jsonify, redirect, render_template, request,
-    send_file, send_from_directory, session, url_for
+    send_from_directory, session, url_for
 )
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
@@ -189,6 +188,8 @@ def setup_defaults():
             'business_card_text': 'Book with Kerrie · Private transport reservations · Dispatch support',
             'qr_label': 'Scan for booking desk',
             'public_ui_style': 'ig_bottom',
+            'site_theme': 'theme-sunset',
+            'site_font': 'font-system',
             'brand_logo_file': '',
             'business_card_file': '',
         }.items():
@@ -257,7 +258,8 @@ def assign_vehicle_to_booking(preferred_operator: str, vehicle_type: str, passen
 def landing():
     settings = {k: get_setting(k, '') for k in [
         'brand_name', 'brand_tagline', 'support_phone', 'support_email',
-        'about_text', 'business_card_text', 'qr_label', 'public_ui_style', 'brand_logo_file', 'business_card_file'
+        'about_text', 'business_card_text', 'qr_label', 'public_ui_style',
+        'site_theme', 'site_font', 'brand_logo_file', 'business_card_file'
     ]}
     settings.setdefault('brand_name', 'Book with Kerrie')
     settings.setdefault('brand_tagline', 'Elegant booking for calm, fast transport handoffs.')
@@ -294,6 +296,8 @@ def landing():
         preferred_vehicle_type=request.args.get('type', ''),
         preferred_passengers=request.args.get('passengers', '1'),
         public_ui_style=get_setting('public_ui_style', 'ig_bottom'),
+        site_theme=get_setting('site_theme', 'theme-sunset'),
+        site_font=get_setting('site_font', 'font-system'),
     )
 
 
@@ -348,41 +352,6 @@ def receipt(reference):
         'support_phone': get_setting('support_phone', '254 712 648079'),
     }
     return render_template('booking_detail.html', booking=booking, settings=settings)
-
-
-@app.route('/card-download')
-def card_download():
-    rel = get_setting('business_card_file', '').strip()
-    candidates = []
-    if rel:
-        candidates.append(STATIC_DIR / rel)
-        candidates.append(BASE_DIR / rel)
-    candidates.extend([
-        UPLOAD_DIR / 'business_card_619dc91c.jpeg',
-        UPLOAD_DIR / 'business_card_619dc91c.jpg',
-        STATIC_DIR / 'img' / 'logo.svg',
-        STATIC_DIR / 'logo.svg',
-    ])
-    for path in candidates:
-        try:
-            if path and path.exists() and path.is_file():
-                return send_file(path, as_attachment=True, download_name=path.name)
-        except OSError:
-            pass
-
-    brand_name = get_setting('brand_name', 'Book with Kerrie')
-    tagline = get_setting('brand_tagline', 'Your Journey, Our priority')
-    svg = (
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="800" viewBox="0 0 1400 800">'
-        f'<rect width="1400" height="800" rx="48" fill="#f7f1e8"/>'
-        f'<rect x="70" y="70" width="1260" height="660" rx="42" fill="#ffffff" stroke="#e7dccf"/>'
-        f'<text x="130" y="210" font-size="72" font-family="Arial, Helvetica, sans-serif" fill="#17213a" font-weight="700">{brand_name}</text>'
-        f'<text x="130" y="285" font-size="34" font-family="Arial, Helvetica, sans-serif" fill="#6a7180">{tagline}</text>'
-        f'<text x="130" y="410" font-size="42" font-family="Arial, Helvetica, sans-serif" fill="#17213a">Business card download is ready.</text>'
-        f'<text x="130" y="485" font-size="30" font-family="Arial, Helvetica, sans-serif" fill="#6a7180">This fallback file appears only when the uploaded card is missing.</text>'
-        f'</svg>'
-    )
-    return send_file(io.BytesIO(svg.encode('utf-8')), mimetype='image/svg+xml', as_attachment=True, download_name='business_card.svg')
 
 
 @app.route('/ops')
@@ -559,7 +528,7 @@ def ops_admins():
 @login_required
 @ops_only
 def ops_settings():
-    keys = ['brand_name', 'brand_tagline', 'support_phone', 'support_email', 'about_text', 'business_card_text', 'qr_label', 'public_ui_style', 'brand_logo_file', 'business_card_file']
+    keys = ['brand_name', 'brand_tagline', 'support_phone', 'support_email', 'about_text', 'business_card_text', 'qr_label', 'public_ui_style', 'site_theme', 'site_font', 'brand_logo_file', 'business_card_file']
     if request.method == 'POST':
         for key in keys[:-2]:
             upsert_setting(key, request.form.get(key, '').strip())
