@@ -95,6 +95,8 @@ document.querySelectorAll(".flash").forEach((el) => {
 
 const THEME_KEY = "kerrie-theme";
 const SIDEBAR_KEY = "kerrie-sidebar";
+const sidebarToggle = document.getElementById("sidebarToggle");
+const sidebarBackdrop = document.getElementById("sidebarBackdrop");
 
 function applyTheme(themeName) {
   const themes = ["theme-kerrie-orange", "theme-sunrise", "theme-clean", "theme-midnight"];
@@ -103,9 +105,12 @@ function applyTheme(themeName) {
   localStorage.setItem(THEME_KEY, themeName);
 }
 
-function applySidebarState(collapsed) {
-  document.body.classList.toggle("sidebar-collapsed", collapsed);
-  localStorage.setItem(SIDEBAR_KEY, collapsed ? "1" : "0");
+function applySidebarState(open) {
+  document.body.classList.toggle("sidebar-open", open);
+  document.body.classList.toggle("sidebar-collapsed", !open);
+  sidebarToggle?.setAttribute("aria-expanded", String(open));
+  if (sidebarBackdrop) sidebarBackdrop.hidden = !open;
+  localStorage.setItem(SIDEBAR_KEY, open ? "1" : "0");
 }
 
 const savedTheme = localStorage.getItem(THEME_KEY);
@@ -115,13 +120,18 @@ if (savedTheme) {
 const savedSidebar = localStorage.getItem(SIDEBAR_KEY);
 if (savedSidebar !== null) {
   applySidebarState(savedSidebar === "1");
+} else {
+  applySidebarState(!window.matchMedia("(max-width: 1100px)").matches);
 }
 
 document.querySelectorAll("[data-theme-choice]").forEach((button) => {
   button.addEventListener("click", () => applyTheme(button.dataset.themeChoice));
 });
 
-const sidebarToggle = document.getElementById("sidebarToggle");
 sidebarToggle?.addEventListener("click", () => {
-  applySidebarState(!document.body.classList.contains("sidebar-collapsed"));
+  applySidebarState(!document.body.classList.contains("sidebar-open"));
+});
+sidebarBackdrop?.addEventListener("click", () => applySidebarState(false));
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") applySidebarState(false);
 });
