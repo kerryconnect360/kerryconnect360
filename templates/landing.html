@@ -40,15 +40,15 @@
     <button class="ig-nav__item" type="button" data-open-dialog="supportDialog">
       <span>☎</span><small>Support</small>
     </button>
-    <button class="ig-nav__item" type="button" data-open-dialog="qrDialog">
-      <span>▣</span><small>QR</small>
+    <button class="ig-nav__item" type="button" data-open-dialog="contactDialog">
+      <span>▣</span><small>Cards</small>
     </button>
     <div class="ig-nav__caption">quick access</div>
   </nav>
   {% else %}
   <nav class="side-dock side-dock--left" aria-label="Quick actions">
     <button class="dock-pill" type="button" data-open-dialog="supportDialog">Support</button>
-    <button class="dock-pill" type="button" data-open-dialog="qrDialog">QR</button>
+    <button class="dock-pill" type="button" data-open-dialog="contactDialog">Cards</button>
   </nav>
 
   <nav class="side-dock side-dock--right" aria-label="Utilities">
@@ -77,11 +77,10 @@
         <button class="hero-chip hero-chip--strong" type="button" data-open-dialog="themeDialog">Themes & colors</button>
         <button class="hero-chip hero-chip--strong" type="button" data-open-dialog="supportDialog">Support</button>
         <button class="hero-chip hero-chip--strong" type="button" data-open-dialog="contactDialog">Business card</button>
-        <button class="hero-chip hero-chip--strong" type="button" data-open-dialog="qrDialog">QR code</button>
       </div>
     </section>
 
-    <section id="ratings" class="ratings-strip panel">
+    <section class="ratings-strip panel">
       <div class="panel-head">
         <div>
           <span class="section-kicker">Ratings</span>
@@ -219,11 +218,6 @@
       <div class="modal-head"><strong>Business card</strong><button value="close" aria-label="Close">×</button></div>
       {% if settings.business_card_file %}
       <img class="business-card-image" src="{{ url_for('static', filename=settings.business_card_file) }}" alt="Business card preview">
-      <div class="modal-actions modal-actions--stack">
-        <a class="cta-button" href="{{ url_for('card_download') }}">Download card</a>
-      </div>
-      {% else %}
-      <p class="muted">No business card uploaded yet.</p>
       {% endif %}
       <p>{{ settings.business_card_text }}</p>
     </form>
@@ -232,10 +226,7 @@
   <dialog class="modal-panel" id="qrDialog">
     <form method="dialog" class="modal-shell">
       <div class="modal-head"><strong>{{ settings.qr_label }}</strong><button value="close" aria-label="Close">×</button></div>
-      <img class="qr-image qr-image--modal" src="{{ url_for('qr_code_png') }}" alt="QR code">
-      <div class="modal-actions modal-actions--stack">
-        <a class="cta-button" href="{{ url_for('qr_code_png') }}" download="kerrie-qr.png">Download QR</a>
-      </div>
+      <div class="qr-frame"><span>QR</span></div>
     </form>
   </dialog>
 </body>
