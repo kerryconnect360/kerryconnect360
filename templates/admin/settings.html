@@ -16,24 +16,6 @@
         <option value="side_dock" {% if settings.public_ui_style == 'side_dock' %}selected{% endif %}>Side navigation</option>
       </select>
     </label>
-    <label>Default theme
-      <select name="site_theme">
-        <option value="theme-sunset" {% if settings.site_theme == 'theme-sunset' %}selected{% endif %}>Current color</option>
-        <option value="theme-midnight" {% if settings.site_theme == 'theme-midnight' %}selected{% endif %}>Black UI</option>
-        <option value="theme-paper" {% if settings.site_theme == 'theme-paper' %}selected{% endif %}>Paper</option>
-        <option value="theme-ocean" {% if settings.site_theme == 'theme-ocean' %}selected{% endif %}>Blue</option>
-        <option value="theme-forest" {% if settings.site_theme == 'theme-forest' %}selected{% endif %}>Green</option>
-        <option value="theme-restyle" {% if settings.site_theme == 'theme-restyle' %}selected{% endif %}>Restyle</option>
-      </select>
-    </label>
-    <label>Default font
-      <select name="site_font">
-        <option value="font-system" {% if settings.site_font == 'font-system' %}selected{% endif %}>System</option>
-        <option value="font-sans" {% if settings.site_font == 'font-sans' %}selected{% endif %}>Modern sans</option>
-        <option value="font-serif" {% if settings.site_font == 'font-serif' %}selected{% endif %}>Serif</option>
-        <option value="font-rounded" {% if settings.site_font == 'font-rounded' %}selected{% endif %}>Rounded</option>
-      </select>
-    </label>
     <label>Upload logo<input name="brand_logo" type="file" accept="image/*"></label>
     <label>Upload business card<input name="business_card_image" type="file" accept="image/*"></label>
     <button class="cta-button" type="submit">Save settings</button>

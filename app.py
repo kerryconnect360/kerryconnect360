@@ -188,8 +188,6 @@ def setup_defaults():
             'business_card_text': 'Book with Kerrie · Private transport reservations · Dispatch support',
             'qr_label': 'Scan for booking desk',
             'public_ui_style': 'ig_bottom',
-            'site_theme': 'theme-sunset',
-            'site_font': 'font-system',
             'brand_logo_file': '',
             'business_card_file': '',
         }.items():
@@ -258,8 +256,7 @@ def assign_vehicle_to_booking(preferred_operator: str, vehicle_type: str, passen
 def landing():
     settings = {k: get_setting(k, '') for k in [
         'brand_name', 'brand_tagline', 'support_phone', 'support_email',
-        'about_text', 'business_card_text', 'qr_label', 'public_ui_style',
-        'site_theme', 'site_font', 'brand_logo_file', 'business_card_file'
+        'about_text', 'business_card_text', 'qr_label', 'public_ui_style', 'brand_logo_file', 'business_card_file'
     ]}
     settings.setdefault('brand_name', 'Book with Kerrie')
     settings.setdefault('brand_tagline', 'Elegant booking for calm, fast transport handoffs.')
@@ -296,8 +293,6 @@ def landing():
         preferred_vehicle_type=request.args.get('type', ''),
         preferred_passengers=request.args.get('passengers', '1'),
         public_ui_style=get_setting('public_ui_style', 'ig_bottom'),
-        site_theme=get_setting('site_theme', 'theme-sunset'),
-        site_font=get_setting('site_font', 'font-system'),
     )
 
 
@@ -528,7 +523,7 @@ def ops_admins():
 @login_required
 @ops_only
 def ops_settings():
-    keys = ['brand_name', 'brand_tagline', 'support_phone', 'support_email', 'about_text', 'business_card_text', 'qr_label', 'public_ui_style', 'site_theme', 'site_font', 'brand_logo_file', 'business_card_file']
+    keys = ['brand_name', 'brand_tagline', 'support_phone', 'support_email', 'about_text', 'business_card_text', 'qr_label', 'public_ui_style', 'brand_logo_file', 'business_card_file']
     if request.method == 'POST':
         for key in keys[:-2]:
             upsert_setting(key, request.form.get(key, '').strip())
