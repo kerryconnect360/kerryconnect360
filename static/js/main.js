@@ -95,6 +95,7 @@ document.querySelectorAll(".flash").forEach((el) => {
 
 const THEME_KEY = "kerrie-theme";
 const SIDEBAR_KEY = "kerrie-sidebar";
+const LIGHT_KEY = "kerrie-light";
 
 function applyTheme(themeName) {
   const themes = ["theme-kerrie-orange", "theme-sunrise", "theme-clean", "theme-midnight"];
@@ -108,6 +109,11 @@ function applySidebarState(collapsed) {
   localStorage.setItem(SIDEBAR_KEY, collapsed ? "1" : "0");
 }
 
+function applyLightAdjust(enabled) {
+  document.body.classList.toggle("light-adjusted", enabled);
+  localStorage.setItem(LIGHT_KEY, enabled ? "1" : "0");
+}
+
 const savedTheme = localStorage.getItem(THEME_KEY);
 if (savedTheme) {
   applyTheme(savedTheme);
@@ -115,6 +121,10 @@ if (savedTheme) {
 const savedSidebar = localStorage.getItem(SIDEBAR_KEY);
 if (savedSidebar !== null) {
   applySidebarState(savedSidebar === "1");
+}
+const savedLight = localStorage.getItem(LIGHT_KEY);
+if (savedLight !== null) {
+  applyLightAdjust(savedLight === "1");
 }
 
 document.querySelectorAll("[data-theme-choice]").forEach((button) => {
@@ -124,4 +134,11 @@ document.querySelectorAll("[data-theme-choice]").forEach((button) => {
 const sidebarToggle = document.getElementById("sidebarToggle");
 sidebarToggle?.addEventListener("click", () => {
   applySidebarState(!document.body.classList.contains("sidebar-collapsed"));
+});
+
+document.addEventListener("click", (event) => {
+  const lightToggle = event.target.closest("[data-light-toggle]");
+  if (lightToggle) {
+    applyLightAdjust(!document.body.classList.contains("light-adjusted"));
+  }
 });

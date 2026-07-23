@@ -66,3 +66,9 @@ document.addEventListener('click', (event) => {
     dialog.close();
   }
 });
+
+const panelParam = new URLSearchParams(window.location.search).get('panel');
+if (panelParam === 'theme' || panelParam === 'font') {
+  const dialog = document.getElementById('themeDialog');
+  if (dialog && typeof dialog.showModal === 'function') dialog.showModal();
+}
