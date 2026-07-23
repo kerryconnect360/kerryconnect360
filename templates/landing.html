@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,7 +10,8 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
 </head>
-<body class="public-body">
+{% set ui_style = public_ui_style or 'ig_bottom' %}
+<body class="public-body ui-style-{{ ui_style }}">
   <div class="bg-orb orb-a"></div>
   <div class="bg-orb orb-b"></div>
   <div class="site-watermark">KERRIE</div>
@@ -26,8 +26,27 @@
     </a>
   </header>
 
+  {% if ui_style == 'ig_bottom' %}
+  <nav class="ig-nav panel" aria-label="Navigate like ig">
+    <a class="ig-nav__item is-active" href="{{ url_for('landing') }}">
+      <span>⌂</span><small>Home</small>
+    </a>
+    <a class="ig-nav__item" href="#booking">
+      <span>＋</span><small>Book</small>
+    </a>
+    <button class="ig-nav__item" type="button" data-open-dialog="aboutDialog">
+      <span>◌</span><small>About</small>
+    </button>
+    <button class="ig-nav__item" type="button" data-open-dialog="supportDialog">
+      <span>☎</span><small>Support</small>
+    </button>
+    <button class="ig-nav__item" type="button" data-open-dialog="contactDialog">
+      <span>▣</span><small>Cards</small>
+    </button>
+    <div class="ig-nav__caption">navigate like ig</div>
+  </nav>
+  {% else %}
   <nav class="side-dock side-dock--left" aria-label="Quick actions">
-    <button class="dock-pill" type="button" data-open-dialog="settingsDialog">Settings</button>
     <button class="dock-pill" type="button" data-open-dialog="aboutDialog">About us</button>
     <button class="dock-pill" type="button" data-open-dialog="supportDialog">Support</button>
   </nav>
@@ -37,6 +56,7 @@
     <button class="dock-pill" type="button" data-open-dialog="contactDialog">Cards</button>
     <a class="dock-pill" href="#booking">Book</a>
   </nav>
+  {% endif %}
 
   <main class="public-shell">
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -49,31 +69,30 @@
 
     <section class="hero-card panel">
       <div class="hero-intro">
-        <span class="eyebrow">Private transport desk</span>
-        <h1>Choose a ride, send the booking, and move without friction.</h1>
-        <p>The public page stays focused on the booking action. No account walls, no cluttered feed, just the request that needs to reach dispatch.</p>
+        <span class="eyebrow">Transport booking</span>
+        <h1>Book a ride.</h1>
+        <p>Ratings first. Booking second. Everything else stays out of the way.</p>
       </div>
 
       <div class="hero-actions">
-        <button class="hero-chip" type="button" data-open-dialog="supportDialog">Call support</button>
-        <button class="hero-chip" type="button" data-open-dialog="aboutDialog">Learn more</button>
-        <button class="hero-chip" type="button" data-open-dialog="qrDialog">Open QR</button>
+        <button class="hero-chip" type="button" data-open-dialog="supportDialog">Support</button>
+        <button class="hero-chip" type="button" data-open-dialog="aboutDialog">About</button>
+        <button class="hero-chip" type="button" data-open-dialog="contactDialog">Cards</button>
       </div>
     </section>
 
     <section class="ratings-strip panel">
       <div class="panel-head">
         <div>
-          <span class="section-kicker">Trusted ratings</span>
-          <h2>Only the useful bits</h2>
+          <span class="section-kicker">Ratings</span>
+          <h2>Trusted operators</h2>
         </div>
-        <div class="panel-note">Rated by real use</div>
       </div>
       <div class="rating-rail">
         {% for item in ratings %}
         <article class="rating-pill">
           <strong>{{ item.label }}</strong>
-          <span>Rating {{ item.rating }}</span>
+          <span>{{ item.rating }}</span>
         </article>
         {% endfor %}
       </div>
@@ -83,17 +102,16 @@
       <form class="booking-panel panel" action="{{ url_for('create_booking') }}" method="post">
         <div class="panel-head">
           <div>
-            <span class="section-kicker">Booking desk</span>
-            <h2>Send a new request</h2>
+            <span class="section-kicker">Booking</span>
+            <h2>Send request</h2>
           </div>
-          <div class="panel-note">No account needed.</div>
         </div>
 
         <div class="compact-grid">
           <label>Full name<input name="full_name" placeholder="Your name" required></label>
           <label>Phone<input name="phone" placeholder="+254..." required></label>
-          <label class="span-2">Pickup<input name="pickup" placeholder="Where should the vehicle collect you?" required></label>
-          <label class="span-2">Drop-off<input name="dropoff" placeholder="Where are you headed?" required></label>
+          <label class="span-2">Pickup<input name="pickup" placeholder="Pickup point" required></label>
+          <label class="span-2">Drop-off<input name="dropoff" placeholder="Destination" required></label>
           <label>Preferred operator
             <select name="preferred_operator">
               <option value="">Any operator</option>
@@ -121,12 +139,12 @@
         </div>
 
         <details class="more-details">
-          <summary>More details</summary>
+          <summary>More</summary>
           <div class="compact-grid compact-grid--more">
             <label>Travel date<input name="journey_date" type="date" required></label>
             <label>Travel time<input name="journey_time" type="time" required></label>
             <label class="span-2">Email<input name="email" type="email" placeholder="Optional"></label>
-            <label class="span-2">Notes<textarea name="notes" rows="3" placeholder="Any special instructions?"></textarea></label>
+            <label class="span-2">Notes<textarea name="notes" rows="3" placeholder="Special request"></textarea></label>
           </div>
         </details>
 
@@ -139,26 +157,24 @@
     <form method="dialog" class="modal-shell">
       <div class="modal-head"><strong>About us</strong><button value="close" aria-label="Close">×</button></div>
       <p>{{ settings.about_text }}</p>
-      <div class="modal-foot">{{ settings.business_card_text }}</div>
     </form>
   </dialog>
 
   <dialog class="modal-panel" id="supportDialog">
     <form method="dialog" class="modal-shell">
-      <div class="modal-head"><strong>Customer care</strong><button value="close" aria-label="Close">×</button></div>
-      <p>Phone: <a href="tel:{{ settings.support_phone|replace(' ', '') }}">{{ settings.support_phone }}</a></p>
-      <p>Email: <a href="mailto:{{ settings.support_email }}">{{ settings.support_email }}</a></p>
+      <div class="modal-head"><strong>Support</strong><button value="close" aria-label="Close">×</button></div>
+      <p><a href="tel:{{ settings.support_phone|replace(' ', '') }}">{{ settings.support_phone }}</a></p>
+      <p><a href="mailto:{{ settings.support_email }}">{{ settings.support_email }}</a></p>
     </form>
   </dialog>
 
   <dialog class="modal-panel" id="contactDialog">
     <form method="dialog" class="modal-shell">
-      <div class="modal-head"><strong>Business card</strong><button value="close" aria-label="Close">×</button></div>
+      <div class="modal-head"><strong>Cards</strong><button value="close" aria-label="Close">×</button></div>
       {% if settings.business_card_file %}
       <img class="business-card-image" src="{{ url_for('static', filename=settings.business_card_file) }}" alt="Business card preview">
       {% endif %}
       <p>{{ settings.business_card_text }}</p>
-      <div class="modal-foot">Keep this route for brand, sharing, and support details.</div>
     </form>
   </dialog>
 
@@ -166,14 +182,6 @@
     <form method="dialog" class="modal-shell">
       <div class="modal-head"><strong>{{ settings.qr_label }}</strong><button value="close" aria-label="Close">×</button></div>
       <div class="qr-frame"><span>QR</span></div>
-      <p>Admin can replace this with a live QR target in settings.</p>
-    </form>
-  </dialog>
-
-  <dialog class="modal-panel" id="settingsDialog">
-    <form method="dialog" class="modal-shell">
-      <div class="modal-head"><strong>Settings</strong><button value="close" aria-label="Close">×</button></div>
-      <p>Public booking preferences can stay here without adding clutter to the page.</p>
     </form>
   </dialog>
 </body>

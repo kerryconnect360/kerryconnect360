@@ -1,4 +1,3 @@
-
 {% extends 'admin/base.html' %}
 {% block content %}
 <div class="panel admin-panel">
@@ -11,6 +10,12 @@
     <label>About text<textarea name="about_text" rows="3" required>{{ settings.about_text }}</textarea></label>
     <label>Business card text<textarea name="business_card_text" rows="2" required>{{ settings.business_card_text }}</textarea></label>
     <label>QR label<input name="qr_label" value="{{ settings.qr_label }}" required></label>
+    <label>User navigation style
+      <select name="public_ui_style">
+        <option value="ig_bottom" {% if settings.public_ui_style == 'ig_bottom' %}selected{% endif %}>Bottom navigation</option>
+        <option value="side_dock" {% if settings.public_ui_style == 'side_dock' %}selected{% endif %}>Side navigation</option>
+      </select>
+    </label>
     <label>Upload logo<input name="brand_logo" type="file" accept="image/*"></label>
     <label>Upload business card<input name="business_card_image" type="file" accept="image/*"></label>
     <button class="cta-button" type="submit">Save settings</button>
