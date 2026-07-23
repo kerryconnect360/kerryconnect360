@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Receipt {{ booking.reference }}</title>
+  <meta name="theme-color" content="#ff9f1c">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="public-body receipt-page">
+  <main class="receipt-shell">
+    <section class="receipt-card panel">
+      <div class="receipt-top">
+        <div class="receipt-brand">
+          <img class="brand-logo brand-logo--receipt" src="{{ url_for('static', filename='img/logo.svg') }}" alt="{{ settings.brand_name }} logo">
+          <div>
+            <span class="section-kicker">Booking receipt</span>
+            <h1>{{ booking.reference }}</h1>
+            <p>Your request has been captured and forwarded to dispatch.</p>
+          </div>
+        </div>
+        <div class="receipt-badge">Pending dispatch</div>
+      </div>
+
+      <div class="receipt-grid">
+        <div><span>Name</span><strong>{{ booking.full_name }}</strong></div>
+        <div><span>Phone</span><strong>{{ booking.phone }}</strong></div>
+        <div><span>Pickup</span><strong>{{ booking.pickup }}</strong></div>
+        <div><span>Drop-off</span><strong>{{ booking.dropoff }}</strong></div>
+        <div><span>Operator</span><strong>{{ booking.preferred_operator or 'Any operator' }}</strong></div>
+        <div><span>Vehicle type</span><strong>{{ booking.vehicle_type }}</strong></div>
+        <div><span>Passengers</span><strong>{{ booking.passengers }}</strong></div>
+        <div><span>Luggage</span><strong>{{ booking.luggage }}</strong></div>
+        <div><span>Journey</span><strong>{{ booking.journey_date }} · {{ booking.journey_time }}</strong></div>
+        <div><span>Assigned vehicle</span><strong>{{ booking.assigned_vehicle or 'Dispatch pending' }}</strong></div>
+        <div><span>Assigned driver</span><strong>{{ booking.assigned_driver or 'Dispatch pending' }}</strong></div>
+      </div>
+
+      {% if booking.notes %}
+      <div class="receipt-notes"><span>Notes</span>{{ booking.notes }}</div>
+      {% endif %}
+
+      <div class="receipt-actions">
+        <a class="cta-button ghost" href="{{ url_for('landing') }}">New booking</a>
+        <button class="cta-button" onclick="window.print()">Print receipt</button>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

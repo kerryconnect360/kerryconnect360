@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Book | {{ brand.site_name if brand else 'Book with Kerrie' }}{% endblock %}
+{% block content %}
+<section class="card page-head">
+  <p class="eyebrow">Booking</p>
+  <h1>Book the current available vehicle.</h1>
+  <p class="lead">Only the first open vehicle in the queue can take bookings right now.</p>
+</section>
+
+<section class="section-grid booking-layout">
+  <article class="card form-card booking-form-card">
+    <form method="post" class="stack-form" id="bookingForm">
+      <label>Trip
+        <select name="trip_id" id="tripSelect" required>
+          {% for trip in trips %}
+            <option value="{{ trip.id }}" {% if selected_trip and selected_trip.id == trip.id %}selected{% endif %}>
+              {{ trip.route_name }} — {{ trip.vehicle_name }} — KSh {{ trip.fare_per_seat }}
+            </option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <div class="trip-meta" id="tripMeta">
+        {% if selected_trip %}
+          <strong>{{ selected_trip.route_name }}</strong>
+          <p>{{ selected_trip.vehicle_name }} • {{ selected_trip.vehicle_type }} • {{ selected_trip.total_seats }} seats</p>
+          <small>{{ selected_trip.departure_date }}{% if selected_trip.departure_time %} • {{ selected_trip.departure_time }}{% endif %}</small>
+          {% if not trip_is_bookable(selected_trip) %}
+            <div class="queue-alert">This vehicle is in the queue. Please book the current available one first.</div>
+          {% endif %}
+        {% endif %}
+      </div>
+
+      <div>
+        <div class="label-row">
+          <label>Customer name<input name="customer_name" required></label>
+          <label>Phone<input name="phone" required></label>
+        </div>
+      </div>
+
+      <label>M-Pesa code (optional)<input name="mpesa_code" placeholder="Transaction code"></label>
+      <label>Note<textarea name="note" rows="4" placeholder="A short note if needed"></textarea></label>
+
+      <input type="hidden" name="selected_seats" id="selectedSeatsInput">
+      <button class="btn primary" type="submit">Submit booking</button>
+    </form>
+  </article>
+
+  <aside class="card seat-card">
+    <div class="seat-head">
+      <div>
+        <p class="eyebrow">Seats</p>
+        <h2>Select available seats</h2>
+      </div>
+      <span class="pill" id="farePill">KSh 0</span>
+    </div>
+    <div id="seatGrid" class="seat-grid"></div>
+    <p class="muted tiny">Selected seats appear here and are reserved only after submission.</p>
+  </aside>
+</section>
+
+<script>
+  window.BOOKING_DATA = {
+    selectedTripId: {{ selected_trip.id if selected_trip else 'null' }},
+    tripsUrl: "{{ url_for('api_trips') }}",
+    seatsBase: "{{ url_for('api_trip_seats', trip_id=0)[:-1] }}"
+  };
+</script>
+{% endblock %}

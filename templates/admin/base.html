@@ -1,0 +1,53 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kerrie Ops</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="ops-body">
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+  <main class="ops-layout">
+    <aside class="ops-sidebar panel">
+      <div class="brand-lockup brand-lockup--ops">
+        <img class="brand-logo" src="{{ url_for('static', filename='img/logo.svg') }}" alt="Kerrie logo">
+        <div class="brand-copy">
+          <strong>Kerrie Ops</strong>
+          <small>Private control room</small>
+        </div>
+      </div>
+      <nav class="ops-nav">
+        <a href="{{ url_for('ops_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('ops_bookings') }}">Bookings</a>
+        <a href="{{ url_for('ops_drivers') }}">Drivers</a>
+        <a href="{{ url_for('ops_vehicles') }}">Vehicles</a>
+        <a href="{{ url_for('ops_admins') }}">Admins</a>
+        <a href="{{ url_for('ops_settings') }}">Settings</a>
+        <a href="{{ url_for('ops_logout') }}">Logout</a>
+      </nav>
+      <div class="ops-note">Admin entry stays off the public screen.</div>
+    </aside>
+
+    <section class="ops-main">
+      <div class="ops-top">
+        <div>
+          <span class="eyebrow">Secure operations</span>
+          <h1>Administration</h1>
+        </div>
+        <a class="cta-button ghost" href="{{ url_for('landing') }}">Public site</a>
+      </div>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash-stack">
+        {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </section>
+  </main>
+</body>
+</html>

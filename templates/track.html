@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Track | {{ brand.site_name if brand else 'Book with Kerrie' }}{% endblock %}
+{% block content %}
+<section class="card page-head">
+  <p class="eyebrow">Track booking</p>
+  <h1>Check status with your reference and phone.</h1>
+  <p class="lead">Use this to find the receipt after payment approval.</p>
+</section>
+<section class="section-grid">
+  <article class="card form-card">
+    <form method="post" class="stack-form">
+      <label>Booking reference<input name="reference" placeholder="BK-..." required></label>
+      <label>Phone number<input name="phone" placeholder="07xx xxx xxx" required></label>
+      <button class="btn primary" type="submit">Check booking</button>
+    </form>
+  </article>
+  <article class="card">
+    {% if booking %}
+      <h2>{{ booking.reference }}</h2>
+      <p>{{ booking.customer_name }}</p>
+      <p>Seats: {{ booking.seats | join(', ') }}</p>
+      <p>Status: {{ booking.payment_status }}</p>
+      {% if booking.receipt_ready %}
+        <a class="btn primary" href="{{ url_for('receipt', token=booking.public_token) }}">Open receipt</a>
+      {% else %}
+        <p class="muted">Receipt will appear after admin approval.</p>
+      {% endif %}
+    {% else %}
+      <p class="muted">No booking loaded yet.</p>
+    {% endif %}
+  </article>
+</section>
+{% endblock %}

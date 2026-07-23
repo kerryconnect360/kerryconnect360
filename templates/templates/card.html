@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Business Card | {{ brand.site_name if brand else 'Book with Kerrie' }}{% endblock %}
+{% block content %}
+<section class="card page-head">
+  <p class="eyebrow">Business card</p>
+  <h1>Downloadable by anyone.</h1>
+  <p class="lead">Uploaded once by admin, shown to all users.</p>
+</section>
+<section class="card card-view">
+  {% if brand.card_url %}
+    {% if brand.card_filename and brand.card_filename.lower().endswith(('.png','.jpg','.jpeg','.webp','.gif','.svg')) %}
+      <img class="card-image" src="{{ brand.card_url }}" alt="Business card">
+    {% else %}
+      <p>The uploaded card is ready for download.</p>
+    {% endif %}
+    <div class="hero-actions">
+      <a class="btn primary" href="{{ url_for('card_download') }}">Download card</a>
+      <a class="btn secondary" href="{{ brand.card_url }}">Open file</a>
+    </div>
+  {% else %}
+    <p class="muted">No business card has been uploaded yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

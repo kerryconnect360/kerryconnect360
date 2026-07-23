@@ -1,0 +1,28 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Private entry</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="ops-body">
+  <main class="ops-shell">
+    <section class="ops-card panel">
+      <span class="eyebrow">Private portal</span>
+      <h1>{{ 'Create the first admin' if setup_mode else 'Enter the private portal' }}</h1>
+      <p>{{ 'The first account becomes admin, and from there more admins, drivers, and vehicles can be managed.' if setup_mode else 'Use the coded route to reach the administration area.' }}</p>
+      <form method="post" action="{{ admin_path }}" class="ops-form">
+        {% if setup_mode %}
+        <label>Full name<input name="full_name" required></label>
+        {% endif %}
+        <label>Email<input name="email" type="email" required></label>
+        {% if setup_mode %}<label>Phone<input name="phone"></label>{% endif %}
+        <label>Password<input name="password" type="password" required></label>
+        <button class="cta-button" type="submit">{{ 'Create admin' if setup_mode else 'Login' }}</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}{{ brand.site_name if brand else 'Book with Kerrie' }}{% endblock %}
+{% block content %}
+<section class="hero card">
+  <div class="hero-brand">
+    <img class="hero-logo" src="{{ brand.logo_url if brand else url_for('static', filename='logo.svg') }}" alt="{{ brand.site_name if brand else 'Book with Kerrie' }}">
+    <p class="eyebrow">Public booking desk</p>
+    <h1>{{ brand.site_name if brand else 'Book with Kerrie' }}</h1>
+    <p class="lead">{{ brand.support_blurb if brand else 'A practical booking site for trips, seats, and approved receipts.' }}</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="{{ url_for('book') }}">Book a seat</a>
+      <a class="btn secondary" href="{{ url_for('track') }}">Track booking</a>
+    </div>
+  </div>
+  <div class="hero-summary">
+    <div class="summary-card">
+      <span>Now booking</span>
+      {% if bookable_trip %}
+        <strong>{{ bookable_trip.route_name }}</strong>
+        <small>{{ bookable_trip.vehicle_name }} • {{ trip_remaining_seats(bookable_trip) }} seats left</small>
+      {% else %}
+        <strong>No open vehicle</strong>
+        <small>New runs will appear here</small>
+      {% endif %}
+    </div>
+    <div class="summary-card">
+      <span>Support</span>
+      <strong>{{ brand.contact_phone if brand else '0712648079' }}</strong>
+      <small>{{ brand.address if brand else 'Open 24/7 for bookings' }}</small>
+    </div>
+  </div>
+</section>
+
+<section class="section-grid">
+  <article class="card feature-card">
+    <p class="eyebrow">Trips</p>
+    <h2>Current vehicles in posting order.</h2>
+    <p>Only the first available vehicle can accept bookings until it fills up.</p>
+    {% if trips %}
+      <div class="trip-list">
+        {% for trip in trips %}
+          <a class="trip-item" href="{{ url_for('book', trip_id=trip.id) }}">
+            <strong>{{ trip.route_name }}</strong>
+            <small>{{ trip.vehicle_name }} • {{ trip.total_seats }} seats • {{ trip.departure_date }}</small>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted">No active trips yet.</p>
+    {% endif %}
+  </article>
+
+  <article class="card feature-card">
+    <p class="eyebrow">Business card</p>
+    <h2>Download the company card.</h2>
+    <p>One file available to many users, directly from the site.</p>
+    {% if card_url %}
+      <div class="card-preview">
+        {% if brand.card_filename and brand.card_filename.lower().endswith(('.png','.jpg','.jpeg','.webp','.gif','.svg')) %}
+          <img src="{{ card_url }}" alt="Business card">
+        {% else %}
+          <div class="file-chip">Business card uploaded</div>
+        {% endif %}
+      </div>
+      <a class="btn secondary" href="{{ url_for('card_download') }}">Download card</a>
+    {% else %}
+      <p class="muted">No business card uploaded yet.</p>
+    {% endif %}
+  </article>
+</section>
+
+<section class="section-grid slim">
+  <article class="card feature-card">
+    <p class="eyebrow">Receipt flow</p>
+    <h2>Book, pay, approve, receipt.</h2>
+    <p>After payment is confirmed by admin, a receipt opens with a share link for WhatsApp.</p>
+  </article>
+  <article class="card feature-card">
+    <p class="eyebrow">Scan</p>
+    <h2>QR opens this site.</h2>
+    <p>The QR code points directly to the live homepage.</p>
+    <a class="btn secondary" href="{{ url_for('qr') }}">Open QR code</a>
+  </article>
+</section>
+{% endblock %}

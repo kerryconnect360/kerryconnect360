@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Admins | {{ brand.site_name if brand else 'Book with Kerrie' }}{% endblock %}
+{% block content %}
+<section class="card page-head">
+  <p class="eyebrow">Admins</p>
+  <h1>Manage admin access.</h1>
+  <p class="lead">The first admin comes from city.db setup. More admins can be added here.</p>
+</section>
+
+<section class="section-grid">
+  <article class="card form-card">
+    <form method="post" class="stack-form">
+      <label>Full name<input name="full_name" required></label>
+      <label>Username<input name="username" required></label>
+      <label>Password<input type="password" name="password" required></label>
+      <button class="btn primary" type="submit">Create admin</button>
+    </form>
+  </article>
+  <article class="card">
+    <h2>Existing admins</h2>
+    <div class="list-stack">
+      {% for admin in admins %}
+        <div class="list-item">
+          <div>
+            <strong>{{ admin.full_name }}</strong>
+            <p>{{ admin.username }}</p>
+          </div>
+          <form method="post" action="{{ url_for('board_admin_toggle', admin_id=admin.id) }}">
+            <button class="btn secondary" type="submit">{% if admin.active %}Disable{% else %}Enable{% endif %}</button>
+          </form>
+        </div>
+      {% else %}
+        <p class="muted">No admins yet.</p>
+      {% endfor %}
+    </div>
+  </article>
+</section>
+{% endblock %}

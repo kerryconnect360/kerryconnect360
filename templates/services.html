@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Trips | {{ brand.site_name if brand else 'Book with Kerrie' }}{% endblock %}
+{% block content %}
+<section class="card page-head">
+  <p class="eyebrow">Trips</p>
+  <h1>Available vehicles and seat counts.</h1>
+  <p class="lead">Pick a trip and move straight into seat booking.</p>
+</section>
+<section class="trip-grid">
+  {% for trip in trips %}
+    <article class="card trip-card">
+      <div class="trip-card-top">
+        <div>
+          <p class="eyebrow">{{ trip.vehicle_type }}</p>
+          <h2>{{ trip.route_name }}</h2>
+        </div>
+        <strong class="fare">KSh {{ trip.fare_per_seat }}</strong>
+      </div>
+      <p>{{ trip.vehicle_name }}</p>
+      <p>{{ trip.origin or 'Origin' }} → {{ trip.destination or 'Destination' }}</p>
+      <p>{{ trip.departure_date }}{% if trip.departure_time %} • {{ trip.departure_time }}{% endif %}</p>
+      <p>{{ trip.total_seats }} seats • {{ trip_remaining_seats(trip) }} left</p>
+      {% if trip_is_bookable(trip) %}
+        <a class="btn primary" href="{{ url_for('book', trip_id=trip.id) }}">Book now</a>
+      {% else %}
+        <span class="pill soft">Queue {{ trip_queue_position(trip) }}{% if trip_queue_position(trip) %} waiting{% endif %}</span>
+      {% endif %}
+    </article>
+  {% else %}
+    <article class="card">
+      <p class="muted">No trips have been published yet.</p>
+    </article>
+  {% endfor %}
+</section>
+{% endblock %}

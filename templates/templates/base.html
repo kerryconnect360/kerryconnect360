@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>{% block title %}{{ brand.site_name if brand else 'Book with Kerrie' }}{% endblock %}</title>
+  <link rel="manifest" href="{{ url_for('manifest') }}">
+  <link rel="icon" href="{{ url_for('favicon') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('favicon') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="theme-{{ appearance.theme_name if appearance else 'kerrie-orange' }} sidebar-{{ appearance.sidebar_mode if appearance else 'open' }}">
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+  <div class="bg-orb orb-c"></div>
+
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="logo-wrap" href="{{ url_for('index') }}">
+        <img class="logo-mark" src="{{ brand.logo_url if brand else url_for('static', filename='logo.svg') }}" alt="{{ brand.site_name if brand else 'Book with Kerrie' }} logo">
+        <span class="logo-copy">
+          <strong>{{ brand.site_name if brand else 'Book with Kerrie' }}</strong>
+          <small>{{ brand.slogan if brand else 'Book seats, travel smoothly.' }}</small>
+        </span>
+      </a>
+
+      <div class="topbar-actions">
+        <button class="btn ghost sidebar-toggle" type="button" id="sidebarToggle">More options</button>
+        <nav class="public-nav" aria-label="Site navigation">
+          <a href="{{ url_for('index') }}">Home</a>
+          <a href="{{ url_for('book') }}">Book</a>
+          <a href="{{ url_for('trips') }}">Trips</a>
+          <a href="{{ url_for('track') }}">Track</a>
+          <a href="{{ url_for('contact') }}">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    {% if latest_announcement %}
+      <section class="notice-strip">
+        <span class="notice-tag">Notice</span>
+        <div>
+          <strong>{{ latest_announcement.title }}</strong>
+          <p>{{ latest_announcement.body }}</p>
+        </div>
+      </section>
+    {% endif %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-stack">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="page-grid">
+      <main class="content-area">
+        {% block content %}{% endblock %}
+      </main>
+
+      <aside class="site-sidebar">
+        <section class="sidebar-card">
+          <p class="eyebrow">More options</p>
+          <h3>Style chooser</h3>
+          <p class="muted tiny">Pick a look for your screen. The admin can set the default in Branding & style.</p>
+          <div class="theme-picker" role="group" aria-label="Theme chooser">
+            <button class="btn secondary theme-choice" type="button" data-theme-choice="kerrie-orange">Kerrie Orange</button>
+            <button class="btn secondary theme-choice" type="button" data-theme-choice="sunrise">Sunrise White</button>
+            <button class="btn secondary theme-choice" type="button" data-theme-choice="clean">Clean Blue</button>
+            <button class="btn secondary theme-choice" type="button" data-theme-choice="midnight">Midnight Gold</button>
+          </div>
+        </section>
+
+        <section class="sidebar-card">
+          <p class="eyebrow">Quick links</p>
+          <div class="sidebar-links">
+            <a href="{{ url_for('book') }}">Book a seat</a>
+            <a href="{{ url_for('card') }}">Business card</a>
+            <a href="{{ url_for('qr') }}">QR code</a>
+            <a href="{{ url_for('faq') }}">FAQs</a>
+          </div>
+        </section>
+
+        {% block sidebar %}{% endblock %}
+      </aside>
+    </div>
+
+    <footer class="footer">
+      <div>
+        <strong>{{ brand.site_name if brand else 'Book with Kerrie' }}</strong>
+        <p>{{ brand.slogan if brand else 'Book seats, travel smoothly.' }}</p>
+      </div>
+      <div class="footer-links">
+        <a href="{{ url_for('card') }}">Business card</a>
+        <a href="{{ url_for('qr') }}">QR code</a>
+        <a href="{{ url_for('contact') }}">Support</a>
+      </div>
+    </footer>
+  </div>
+
+  <button class="install-btn hidden" id="installBtn">Install app</button>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register("{{ url_for('service_worker') }}"));
+    }
+  </script>
+</body>
+</html>
