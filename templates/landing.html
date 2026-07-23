@@ -4,19 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ settings.brand_name }}</title>
-  <meta name="theme-color" content="#ff9f1c">
+  <meta name="theme-color" content="{% if site_theme == 'theme-midnight' %}#0b1220{% elif site_theme == 'theme-paper' %}#ffffff{% elif site_theme == 'theme-ocean' %}#0f4c81{% elif site_theme == 'theme-forest' %}#0f5132{% elif site_theme == 'theme-restyle' %}#24104f{% else %}#ff9f1c{% endif %}">
   <link rel="manifest" href="{{ url_for('manifest') }}">
   <link rel="icon" href="{{ url_for('static', filename='img/icon-192.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
 </head>
 {% set ui_style = public_ui_style or 'ig_bottom' %}
-<body class="public-body ui-style-{{ ui_style }}">
+<body class="public-body {% if ui_style == 'ig_bottom' %}ui-style-ig{% else %}ui-style-side{% endif %} {{ site_theme }} {{ site_font }}">
   <div class="bg-orb orb-a"></div>
   <div class="bg-orb orb-b"></div>
   <div class="site-watermark">KERRIE</div>
 
-  <header class="public-top public-top--landing">
+  <header class="public-top">
     <a class="brand-lockup brand-lockup--hero" href="{{ url_for('landing') }}" aria-label="{{ settings.brand_name }}">
       <img class="brand-logo brand-logo--hero" src="{{ url_for('static', filename=settings.brand_logo_file or 'img/logo.svg') }}" alt="{{ settings.brand_name }} logo">
       <span class="brand-copy brand-copy--hero">
@@ -24,15 +24,13 @@
         <small>{{ settings.brand_tagline }}</small>
       </span>
     </a>
-    <button class="menu-button" type="button" data-open-dialog="menuDialog" aria-label="Open menu">
-      <span></span>
-      <span></span>
-      <span></span>
+    <button class="menu-button" type="button" data-open-dialog="themeDialog" aria-label="Open themes and colors menu">
+      <span></span><span></span><span></span>
     </button>
   </header>
 
   {% if ui_style == 'ig_bottom' %}
-  <nav class="ig-nav panel" aria-label="Quick actions">
+  <nav class="ig-nav panel" aria-label="Main navigation">
     <a class="ig-nav__item is-active" href="{{ url_for('landing') }}">
       <span>⌂</span><small>Home</small>
     </a>
@@ -43,18 +41,18 @@
       <span>☎</span><small>Support</small>
     </button>
     <button class="ig-nav__item" type="button" data-open-dialog="contactDialog">
-      <span>▣</span><small>Card</small>
+      <span>▣</span><small>Cards</small>
     </button>
+    <div class="ig-nav__caption">quick access</div>
   </nav>
   {% else %}
   <nav class="side-dock side-dock--left" aria-label="Quick actions">
-    <button class="dock-pill" type="button" data-open-dialog="aboutDialog">About us</button>
     <button class="dock-pill" type="button" data-open-dialog="supportDialog">Support</button>
+    <button class="dock-pill" type="button" data-open-dialog="contactDialog">Cards</button>
   </nav>
 
   <nav class="side-dock side-dock--right" aria-label="Utilities">
-    <button class="dock-pill dock-pill--accent" type="button" data-open-dialog="qrDialog">QR</button>
-    <button class="dock-pill" type="button" data-open-dialog="contactDialog">Cards</button>
+    <button class="dock-pill dock-pill--accent" type="button" data-open-dialog="themeDialog">Themes</button>
     <a class="dock-pill" href="#booking">Book</a>
   </nav>
   {% endif %}
@@ -76,9 +74,9 @@
       </div>
 
       <div class="hero-actions">
-        <button class="hero-chip" type="button" data-open-dialog="supportDialog">Support</button>
-        <button class="hero-chip" type="button" data-open-dialog="aboutDialog">About</button>
-        <button class="hero-chip" type="button" data-open-dialog="contactDialog">Cards</button>
+        <button class="hero-chip hero-chip--strong" type="button" data-open-dialog="themeDialog">Themes & colors</button>
+        <button class="hero-chip hero-chip--strong" type="button" data-open-dialog="supportDialog">Support</button>
+        <button class="hero-chip hero-chip--strong" type="button" data-open-dialog="contactDialog">Business card</button>
       </div>
     </section>
 
@@ -92,30 +90,16 @@
       <div class="rating-rail">
         {% for item in ratings %}
         <article class="rating-pill">
-          <strong>{{ item.label }}</strong>
-          <span>{{ item.rating }}</span>
+          <div class="rating-pill__top">
+            <strong>{{ item.label }}</strong>
+            <span class="rating-score">{{ item.rating }}</span>
+          </div>
+          <div class="rating-stars" aria-label="{{ item.rating }} out of 5">
+            ★★★★★
+          </div>
+          <small>Visible rating</small>
         </article>
         {% endfor %}
-      </div>
-    </section>
-
-    <section class="rating-panel panel">
-      <div class="panel-head">
-        <div>
-          <span class="section-kicker">Your voice</span>
-          <h2>Rate the ride desk</h2>
-        </div>
-        <div class="panel-note">Quick tap · no login</div>
-      </div>
-      <div class="rating-widget" data-rating-widget>
-        <div class="rating-stars" role="radiogroup" aria-label="Rate this service">
-          <button type="button" data-rating-value="1" aria-label="1 star">★</button>
-          <button type="button" data-rating-value="2" aria-label="2 stars">★</button>
-          <button type="button" data-rating-value="3" aria-label="3 stars">★</button>
-          <button type="button" data-rating-value="4" aria-label="4 stars">★</button>
-          <button type="button" data-rating-value="5" aria-label="5 stars">★</button>
-        </div>
-        <p class="rating-feedback" data-rating-feedback>Tap a star to leave a quick rating.</p>
       </div>
     </section>
 
@@ -174,6 +158,46 @@
     </section>
   </main>
 
+  <dialog class="modal-panel" id="themeDialog">
+    <form method="dialog" class="modal-shell modal-shell--wide">
+      <div class="modal-head">
+        <strong>Themes and colors</strong>
+        <button value="close" aria-label="Close">×</button>
+      </div>
+      <p>Pick a look that suits the screen. Changes can stay on this device until you reset them.</p>
+      <div class="theme-grid">
+        <button class="theme-card theme-card--sunset" type="button" data-theme-choice="theme-sunset">
+          <strong>Current color</strong><span>Warm, soft, familiar</span>
+        </button>
+        <button class="theme-card theme-card--midnight" type="button" data-theme-choice="theme-midnight">
+          <strong>Black UI</strong><span>White text on dark panels</span>
+        </button>
+        <button class="theme-card theme-card--paper" type="button" data-theme-choice="theme-paper">
+          <strong>Paper</strong><span>White background, black writing</span>
+        </button>
+        <button class="theme-card theme-card--ocean" type="button" data-theme-choice="theme-ocean">
+          <strong>Blue</strong><span>Fresh, cool, balanced</span>
+        </button>
+        <button class="theme-card theme-card--forest" type="button" data-theme-choice="theme-forest">
+          <strong>Green</strong><span>Bright and calm</span>
+        </button>
+        <button class="theme-card theme-card--restyle" type="button" data-theme-choice="theme-restyle">
+          <strong>Restyle</strong><span>Bold mixed gradients</span>
+        </button>
+      </div>
+      <div class="font-grid">
+        <button class="font-chip" type="button" data-font-choice="font-system">System</button>
+        <button class="font-chip" type="button" data-font-choice="font-sans">Modern sans</button>
+        <button class="font-chip" type="button" data-font-choice="font-serif">Serif</button>
+        <button class="font-chip" type="button" data-font-choice="font-rounded">Rounded</button>
+      </div>
+      <div class="modal-actions">
+        <button class="cta-button cta-button--subtle" type="button" data-reset-look>Reset look</button>
+        <button class="cta-button" type="button" data-close-dialog="themeDialog">Done</button>
+      </div>
+    </form>
+  </dialog>
+
   <dialog class="modal-panel" id="aboutDialog">
     <form method="dialog" class="modal-shell">
       <div class="modal-head"><strong>About us</strong><button value="close" aria-label="Close">×</button></div>
@@ -191,7 +215,7 @@
 
   <dialog class="modal-panel" id="contactDialog">
     <form method="dialog" class="modal-shell">
-      <div class="modal-head"><strong>Cards</strong><button value="close" aria-label="Close">×</button></div>
+      <div class="modal-head"><strong>Business card</strong><button value="close" aria-label="Close">×</button></div>
       {% if settings.business_card_file %}
       <img class="business-card-image" src="{{ url_for('static', filename=settings.business_card_file) }}" alt="Business card preview">
       {% endif %}
@@ -203,26 +227,6 @@
     <form method="dialog" class="modal-shell">
       <div class="modal-head"><strong>{{ settings.qr_label }}</strong><button value="close" aria-label="Close">×</button></div>
       <div class="qr-frame"><span>QR</span></div>
-    </form>
-  </dialog>
-
-  <dialog class="modal-panel menu-dialog" id="menuDialog">
-    <form method="dialog" class="modal-shell modal-shell--menu">
-      <div class="modal-head"><strong>More options</strong><button value="close" aria-label="Close">×</button></div>
-      <p>Pick a look for the site or jump to the key pages.</p>
-      <div class="theme-grid" role="group" aria-label="Theme chooser">
-        <button class="theme-chip" type="button" data-theme-choice="aurora">Aurora Blend</button>
-        <button class="theme-chip" type="button" data-theme-choice="seabloom">Sea Bloom</button>
-        <button class="theme-chip" type="button" data-theme-choice="sunrise">Sunrise Glow</button>
-        <button class="theme-chip" type="button" data-theme-choice="midnight">Midnight Gold</button>
-      </div>
-      <div class="modal-links">
-        <a href="#booking">Book</a>
-        <button type="button" data-open-dialog="supportDialog">Support</button>
-        <button type="button" data-open-dialog="contactDialog">Business card</button>
-        <button type="button" data-open-dialog="aboutDialog">About</button>
-      </div>
-      <div class="modal-foot">Choose a blend that feels right on your screen.</div>
     </form>
   </dialog>
 </body>
