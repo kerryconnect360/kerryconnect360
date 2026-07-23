@@ -1,0 +1,36 @@
+
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="panel admin-panel">
+  <div class="section-headline">Booking queue</div>
+  <div class="admin-list booking-list">
+    {% for booking in bookings %}
+    <article class="booking-admin-card">
+      <div class="booking-head">
+        <div>
+          <strong>{{ booking.reference }}</strong>
+          <small>{{ booking.full_name }} · {{ booking.phone }}</small>
+        </div>
+        <span class="status {{ booking.status|lower }}">{{ booking.status }}</span>
+      </div>
+      <p>{{ booking.pickup }} → {{ booking.dropoff }}</p>
+      <div class="booking-meta">
+        <span>{{ booking.vehicle_type }}</span><span>{{ booking.passengers }} pax</span><span>{{ booking.journey_date }} {{ booking.journey_time }}</span>
+      </div>
+      <form method="post" action="{{ url_for('ops_booking_update', booking_id=booking.id) }}" class="booking-update">
+        <input name="assigned_driver" placeholder="Assign driver" value="{{ booking.assigned_driver or '' }}">
+        <input name="assigned_vehicle" placeholder="Assign vehicle" value="{{ booking.assigned_vehicle or '' }}">
+        <select name="status">
+          {% for s in ['Pending','Confirmed','Assigned','Completed','Cancelled'] %}
+          <option value="{{ s }}" {% if booking.status == s %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+        <button class="cta-button" type="submit">Save</button>
+      </form>
+    </article>
+    {% else %}
+    <article class="booking-admin-card empty-state"><strong>No bookings yet</strong><small>New requests will appear here.</small></article>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

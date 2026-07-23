@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Book with Kerrie logo">
+  <defs>
+    <linearGradient id="a" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffb347"/>
+      <stop offset="50%" stop-color="#ff7d59"/>
+      <stop offset="100%" stop-color="#7a5cff"/>
+    </linearGradient>
+    <linearGradient id="b" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#fff3e6" stop-opacity="1"/>
+    </linearGradient>
+  </defs>
+  <rect x="28" y="28" width="456" height="456" rx="124" fill="url(#a)"/>
+  <circle cx="256" cy="204" r="118" fill="rgba(255,255,255,0.18)"/>
+  <path d="M146 294c26-58 72-92 110-92 42 0 77 21 106 63l28-18c-34-60-85-91-140-91-68 0-126 39-165 120l29 18z" fill="#fff"/>
+  <rect x="140" y="308" width="232" height="26" rx="13" fill="#fff"/>
+  <path d="M162 358h188c15 0 28 13 28 28v12H134v-12c0-15 13-28 28-28z" fill="url(#b)"/>
+  <circle cx="182" cy="358" r="22" fill="#222"/>
+  <circle cx="330" cy="358" r="22" fill="#222"/>
+  <text x="256" y="458" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="800" text-anchor="middle" fill="#ffffff">KERRIE</text>
+</svg>

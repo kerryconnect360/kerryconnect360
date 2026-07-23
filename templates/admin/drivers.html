@@ -1,0 +1,42 @@
+
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="two-column">
+  <section class="panel admin-panel">
+    <div class="section-headline">Add driver</div>
+    <form method="post" class="stack-form">
+      <label>Full name<input name="full_name" required></label>
+      <label>Phone<input name="phone" required></label>
+      <label>License number<input name="license_no" required></label>
+      <label>Login name<input name="login_name" placeholder="e.g. amina.wairimu"></label>
+      <label>Temporary password<input name="password" type="password" required></label>
+      <label>Operator<input name="operator_name" placeholder="Optional"></label>
+      <label>Rating<input name="rating" value="4.9"></label>
+      <label>Status
+        <select name="status">
+          <option>Available</option>
+          <option>Busy</option>
+          <option>Off duty</option>
+        </select>
+      </label>
+      <button class="cta-button" type="submit">Add driver</button>
+    </form>
+  </section>
+  <section class="panel admin-panel">
+    <div class="section-headline">Driver roster</div>
+    <div class="admin-list">
+      {% for driver in drivers %}
+      <article class="admin-row admin-row--stack">
+        <div>
+          <strong>{{ driver.full_name }}</strong>
+          <small>{{ driver.operator_name or 'Independent' }} · {{ driver.rating }} · {{ driver.login_name }}</small>
+        </div>
+        <span class="status {{ driver.status|lower|replace(' ', '-') }}">{{ driver.status }}</span>
+      </article>
+      {% else %}
+      <article class="admin-row admin-row--stack empty-state"><strong>No drivers yet</strong><small>Added drivers will appear here.</small></article>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}

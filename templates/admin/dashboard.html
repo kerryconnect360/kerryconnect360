@@ -1,0 +1,77 @@
+
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="admin-hero panel">
+  <div>
+    <span class="eyebrow">Admin control room</span>
+    <h1>Bookings, drivers, vehicles, and settings in one place.</h1>
+    <p>Fast editing, clear visibility, and quiet control over the public transport desk.</p>
+  </div>
+  <div class="admin-hero-grid">
+    {% for key, value in stats.items() %}
+    <article class="mini-stat">
+      <span>{{ key|replace('_', ' ')|title }}</span>
+      <strong>{{ value }}</strong>
+    </article>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="admin-grid">
+  <section class="panel admin-panel">
+    <div class="section-headline">Recent requests</div>
+    <div class="admin-list">
+      {% for booking in bookings %}
+      <article class="admin-row admin-row--stack">
+        <div>
+          <strong>{{ booking.reference }} · {{ booking.full_name }}</strong>
+          <small>{{ booking.pickup }} → {{ booking.dropoff }}</small>
+        </div>
+        <div class="admin-row-meta">
+          <span class="status {{ booking.status|lower }}">{{ booking.status }}</span>
+          <small>{{ booking.vehicle_type }} · {{ booking.passengers }} pax</small>
+        </div>
+      </article>
+      {% else %}
+      <article class="admin-row admin-row--stack empty-state">
+        <div>
+          <strong>No bookings yet</strong>
+          <small>New requests will appear here.</small>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="panel admin-panel">
+    <div class="section-headline">Private queue</div>
+    <div class="quick-links quick-links--stacked">
+      <a href="{{ url_for('ops_bookings') }}">Latest requests</a>
+      <a href="{{ url_for('ops_drivers') }}">Drivers</a>
+      <a href="{{ url_for('ops_vehicles') }}">Vehicles</a>
+      <a href="{{ url_for('ops_admins') }}">Admins</a>
+      <a href="{{ url_for('ops_settings') }}">Logo, cards, support</a>
+      <a href="{{ url_for('ops_logout') }}">Logout</a>
+    </div>
+
+    <div class="asset-preview">
+      <div class="asset-preview__item">
+        <span>Logo</span>
+        {% if settings.brand_logo_file %}
+          <img src="{{ url_for('static', filename=settings.brand_logo_file) }}" alt="Uploaded logo">
+        {% else %}
+          <strong>Default logo</strong>
+        {% endif %}
+      </div>
+      <div class="asset-preview__item">
+        <span>Business card</span>
+        {% if settings.business_card_file %}
+          <img src="{{ url_for('static', filename=settings.business_card_file) }}" alt="Business card">
+        {% else %}
+          <strong>{{ settings.business_card_text }}</strong>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
