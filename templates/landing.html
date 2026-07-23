@@ -6,9 +6,9 @@
   <title>{{ settings.brand_name }}</title>
   <meta name="theme-color" content="#ff9f1c">
   <link rel="manifest" href="{{ url_for('manifest') }}">
-  <link rel="icon" href="{{ url_for('static', filename='img/icon-192.png') }}">
+  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
 </head>
 {% set ui_style = public_ui_style or 'ig_bottom' %}
 <body class="public-body ui-style-{{ ui_style }}">
@@ -18,7 +18,7 @@
 
   <header class="public-top public-top--landing">
     <a class="brand-lockup brand-lockup--hero" href="{{ url_for('landing') }}" aria-label="{{ settings.brand_name }}">
-      <img class="brand-logo brand-logo--hero" src="{{ url_for('static', filename=settings.brand_logo_file or 'img/logo.svg') }}" alt="{{ settings.brand_name }} logo">
+      <img class="brand-logo brand-logo--hero" src="{{ url_for('static', filename=settings.brand_logo_file or 'logo.svg') }}" alt="{{ settings.brand_name }} logo">
       <span class="brand-copy brand-copy--hero">
         <strong>{{ settings.brand_name }}</strong>
         <small>{{ settings.brand_tagline }}</small>
@@ -174,14 +174,14 @@
     </section>
   </main>
 
-  <div class="install-reminder panel" id="installReminder" hidden>
-    <div class="install-reminder__copy">
+  <div class="install-banner hidden" id="installBanner" hidden>
+    <div class="install-banner__copy">
       <strong>Install the app</strong>
       <p>Keep it on your phone for quicker access.</p>
     </div>
-    <div class="install-reminder__actions">
+    <div class="install-banner__actions">
       <button class="hero-chip hero-chip--compact" type="button" id="installNowBtn">Install</button>
-      <button class="hero-chip hero-chip--compact ghost" type="button" id="dismissInstallBtn">Later</button>
+      <button class="hero-chip hero-chip--compact ghost install-banner__close" type="button" id="dismissInstallBtn" aria-label="Dismiss install prompt">×</button>
     </div>
   </div>
 
@@ -228,7 +228,7 @@
       <p>Open a section, choose your look, then close the menu when you are done.</p>
 
       <div class="menu-sections">
-        <details class="menu-section" open>
+        <details class="menu-section">
           <summary>Themes and colors</summary>
           <div class="theme-grid theme-grid--wide" role="group" aria-label="Theme chooser">
             <button class="theme-chip" type="button" data-theme-choice="kerrie-orange">Current</button>

@@ -104,7 +104,16 @@
     </footer>
   </div>
 
-  <button class="install-btn hidden" id="installBtn">Install app</button>
+  <div class="install-banner hidden" id="installBanner" hidden>
+    <div class="install-banner__copy">
+      <strong>Install the app</strong>
+      <p>Keep it on your phone for quicker access.</p>
+    </div>
+    <div class="install-banner__actions">
+      <button class="btn primary install-banner__action" type="button" id="installBtn">Install</button>
+      <button class="btn ghost install-banner__close" type="button" id="dismissInstallBtn" aria-label="Dismiss install prompt">×</button>
+    </div>
+  </div>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   <script>
     if ('serviceWorker' in navigator) {
